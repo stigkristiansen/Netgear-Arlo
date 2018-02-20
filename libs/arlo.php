@@ -50,8 +50,7 @@ class Arlo {
 		if($this->authentication==NULL)
 			return false;
 		
-		$devices[cameras] = $this->cameras;
-		$devices[basestations] = $this->basestations;
+		$devices = Array("cameras" => $this->cameras, "basestations" => $this->basestations);
 		
 		return $devices;
 	}
