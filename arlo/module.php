@@ -58,7 +58,7 @@ class ArloModule extends IPSModule {
 	}
 	
 	public function DownloadURL(string $Url, string $Filename) {
-		
+		$arlo = new Arlo();
 		return $arlo->DownloadURL($Url, $Filename);
 		
 	}	
