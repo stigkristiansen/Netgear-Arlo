@@ -17,10 +17,10 @@ class ArloModule extends IPSModule {
     }
 	
 	public function TakeSnapshot (string $CameraName) {
-		$email = $this->GetPropertyString("email");
-		$password = $this->GetPropertyString("password");
+		$email = $this->ReadPropertyString("email");
+		$password = $this->ReadPropertyString("password");
 		
-		if(strlen($password)>0 && strlen($email)) {
+		if(strlen($password)>0 && strlen($email)>0) {
 			$arlo = new Arlo();
 			if (!$arlo->Init($email,$password))
 				return false;
