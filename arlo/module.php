@@ -66,7 +66,7 @@ class ArloModule extends IPSModule {
 		return $arlo->DownloadURL($Url, $Filename);
 	}
 
-	public function Arm($BasestationName) {
+	public function Arm(string $BasestationName) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
 		
@@ -82,7 +82,7 @@ class ArloModule extends IPSModule {
 			return $result;
 		}
 	}  			
-	public function Disarm($BasestationName) {
+	public function Disarm(string $BasestationName) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
 		
@@ -97,7 +97,9 @@ class ArloModule extends IPSModule {
 			
 			return $result;
 		}
-	}  
+	} 
+
+	
 }
 
 ?>
