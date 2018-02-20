@@ -36,7 +36,7 @@ class ArloModule extends IPSModule {
 		}	
 	}
 	
-	public function GetLibrary ($FromYYYYMMDD, $ToYYYYMMDD) {
+	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
 		
@@ -55,7 +55,10 @@ class ArloModule extends IPSModule {
 		}	
 	}
 	
-		
+	public function DownloadURL(string $Url, string $Filename) {
+		$arlo = new Arlo();
+		return $arlo->DownloadURL($Url, $Filename);
+	}	
 }
 
 ?>
