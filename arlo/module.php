@@ -33,7 +33,8 @@ class ArloModule extends IPSModule {
 			$arlo->Logout();
 			
 			return true;
-		}	
+		} else
+			return false;
 	}
 	
 	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
@@ -52,12 +53,22 @@ class ArloModule extends IPSModule {
 				return false;
 					
 			return $library;
-		}	
+		} else
+			return false;
 	}
 	
 	public function DownloadURL(string $Url, string $Filename) {
-		$arlo = new Arlo();
-		return $arlo->DownloadURL($Url, $Filename);
+		$email = $this->ReadPropertyString("email");
+		$password = $this->ReadPropertyString("password");
+		
+		if(strlen($password)>0 && strlen($email)>0) {
+			$arlo = new Arlo();
+			if ($arlo->Init($email,$password)===false)
+				return false;
+			
+			return $arlo->DownloadURL($Url, $Filename);
+		} else
+			return false;
 	}	
 }
 
