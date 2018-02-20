@@ -46,6 +46,16 @@ class Arlo {
 		
 	}
 	
+	public function GetAllDevices() {
+		if($this->authentication==NULL)
+			return false;
+		
+		$devices[cameras] = $this->cameras;
+		$devices[basestations] = $this->basestations;
+		
+		return $devices;
+	}
+	
 	public function GetLibrary($FromYYYYMMDD, $ToYYYYMMDD) {
 		if($this->authentication==NULL)
 			return false;			

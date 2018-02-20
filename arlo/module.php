@@ -43,6 +43,25 @@ class ArloModule extends IPSModule {
 			return false;
 	}
 	
+	public function GetDevices() {
+		$email = $this->ReadPropertyString("email");
+		$password = $this->ReadPropertyString("password");
+		
+		if(strlen($password)>0 && strlen($email)>0) {
+			$arlo = new Arlo();
+			if ($arlo->Init($email,$password)===false) {
+				$arlo->Logout();
+				return false;
+			}
+			
+			$devices = $arlo->GetAllDevices();
+			$arlo->Logout();
+			
+			return $devices;
+		} else
+			return false;
+	}
+	
 	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
