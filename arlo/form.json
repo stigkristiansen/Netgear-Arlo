@@ -8,5 +8,9 @@
 		{ "type": "Label", "label": "Other settings" },
 		{ "type": "CheckBox", "name": "Log", "caption": "Enable logging:" }
     ],
-
+    "actions":
+    [
+        { "type": "Button", "label": "Refresh from Arlo Cloud", "onClick": "UpdateAllDevices($id);" },
+    
+    ]
 }
