@@ -76,6 +76,10 @@ class ArloModule extends IPSModule {
 		
 		$ids = IPS_GetChildrenIds($this->InstanceID);
 		for($x=0;$x<count($ids);$x++) {
+			$children = IPS_GetChildrenIds($ids[$x]);
+			for($y=0;$y<count($children);$y++)
+				IPS_DeleteInstance($children[$y]);
+			
 			IPS_DeleteInstance($ids[$x]);
 		}
 		
