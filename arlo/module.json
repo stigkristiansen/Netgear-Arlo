@@ -1,7 +1,7 @@
 { 
     "id" :  "{10113AE2-5247-439C-B386-B65B0DC32B12}" , 
     "name" :  "ArloModule" , 
-    "type" :  2 , 
+    "type" :  3 , 
     "vendor" :  "Stig Kristiansen" , 
     "aliases" : 
     [ 

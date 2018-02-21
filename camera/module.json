@@ -1,7 +1,7 @@
 { 
     "id" :  "{2B472806-C471-4104-9B61-EA2F17588A33}" , 
     "name" :  "ArloCameraModule" , 
-    "type" :  1 , 
+    "type" :  3 , 
     "vendor" :  "Stig Kristiansen" , 
     "aliases" : 
     [ 
