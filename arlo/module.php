@@ -72,7 +72,7 @@ class ArloModule extends IPSModule {
 			return;
 		
 		$cameras = $result['cameras'];
-		$basestations = $result['basestations']
+		$basestations = $result['basestations'];
 		
 		$ids = IPS_GetChildenIds(this->InstanceID);
 		for($x=0;$x<count($ids);$x++) {
