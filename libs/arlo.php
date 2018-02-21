@@ -12,8 +12,8 @@ class Arlo {
 		$result = $this->Authenticate($Email, $Password);
 		if($result===false)
 			return false;
-		else
-			$this->authentication = $result;
+		
+		$this->authentication = $result;
 		
 		$result = $this->GetDevices($this->authentication);
 		if($result===false)
@@ -25,7 +25,14 @@ class Arlo {
 		if($this->cameras==NULL || $this->basestations == NULL)
 			return false;
 			
-		return true;
+		return true;;
+	}
+	
+	public function GetAuthentication(){
+		if($this->authentication == NULL)
+			return false;
+		
+		return $this->authentication;
 	}
 	
 	public function Logout() {

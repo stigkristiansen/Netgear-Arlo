@@ -14,6 +14,9 @@ class ArloModule extends IPSModule {
    
     public function ApplyChanges(){
         parent::ApplyChanges();
+		
+		UpdateAllDevices();
+				
     }
 	
 	public function TakeSnapshot (string $CameraName) {
@@ -60,6 +63,38 @@ class ArloModule extends IPSModule {
 			return $devices;
 		} else
 			return false;
+	}
+	
+	public function UpdateAllDevices() {
+		$result = $this->GetDevices();
+		
+		if($result===false)
+			return;
+		
+		$cameras = $result['cameras']>;
+		$basestations = $result['basestations']
+		
+		$ids = IPS_GetChildenIds(this->InstanceID);
+		for($x=0;$x<count($ids);$x++) {
+			IPS_DeleteInstance($ids[$x]);
+		}
+		
+		for($x=0;$x<count($basestations);$x++) {
+			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
+			IPS_SetName($$basestationInsId, $basestations[$x]->deviceName); 
+			IPS_SetParent($basestationInsId, $this->InstanceId);
+			IPS_ApplyChanges($basestationInsId); 
+			
+			for($y=0;$y<count($cameras);$y++) {
+				if($basestations[$x]->deviceId==$cameras[$y]->parentId) {
+					$cameraInsId = IPS_CreateInstance("{2B472806-C471-4104-9B61-EA2F17588A33}");
+					IPS_SetName($$cameraInsId, $cameras[$y]->deviceName); 
+					IPS_SetParent($cameraInsId, $basestationInsId);	
+					IPS_ApplyChanges($cameraInsId);
+				}
+			}
+		}
+		
 	}
 	
 	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
