@@ -82,7 +82,7 @@ class ArloModule extends IPSModule {
 		for($x=0;$x<count($basestations);$x++) {
 			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
 			IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
-			IPS_SetParent($basestationInsId, $this->InstanceId);
+			IPS_SetParent($basestationInsId, $this->InstanceID);
 			IPS_ApplyChanges($basestationInsId); 
 			
 			for($y=0;$y<count($cameras);$y++) {
