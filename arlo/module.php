@@ -15,7 +15,7 @@ class ArloModule extends IPSModule {
     public function ApplyChanges(){
         parent::ApplyChanges();
 		
-		UpdateAllDevices();
+		$this->UpdateAllDevices();
 				
     }
 	
