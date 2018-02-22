@@ -101,7 +101,7 @@ class ArloModule extends IPSModule {
 					IPS_ApplyChanges($cameraInsId);
 					
 					$camId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1);
-					$filename = "../../media/".$cameras[$y]->deviceName.".jpg";
+					$filename = __DIR__ . "/../../../media/".$cameras[$y]->deviceName.".jpg";
 					if($this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename))
 						IPS_SetMediaFile($camId, $fileName, false);
 				}
