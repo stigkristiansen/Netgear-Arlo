@@ -209,7 +209,7 @@ class ArloModule extends IPSModule {
 	}
 
 	private function CreateMediaByName($Id, $Name, $Type){
-		$mId = IPS_GetMediaIDByName($Name, $Id);
+		$mId = @IPS_GetMediaIDByName($Name, $Id);
 		if($mId === false) {
 		  $mId = IPS_CreateMedia($Type);
 		  IPS_SetParent($mId, $Id);
