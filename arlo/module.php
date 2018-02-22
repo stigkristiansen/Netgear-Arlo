@@ -65,24 +65,28 @@ class ArloModule extends IPSModule {
 			return false;
 	}
 	
+		
 	public function UpdateAllDevices() {
 		$result = $this->GetDevices();
 		
 		if($result===false)
 			return;
 		
-		$cameras = $result['cameras'];
-		$basestations = $result['basestations'];
+		// Cleanup old devices
+		$cameras = IPS_GetInstanceListByModuleID("{2B472806-C471-4104-9B61-EA2F17588A33}");
+		$basestations = IPS_GetInstanceListByModuleID("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
 		
-		$ids = IPS_GetChildrenIds($this->InstanceID);
-		for($x=0;$x<count($ids);$x++) {
-			$children = IPS_GetChildrenIds($ids[$x]);
-			for($y=0;$y<count($children);$y++)
-				IPS_DeleteInstance($children[$y]);
-			
-			IPS_DeleteInstance($ids[$x]);
+		for($x=0;$x<count($cameras);$x++) {
+			$this->DeleteObject($cameras[$x]);
 		}
 		
+		for($x=0;$x<count($basestations);$x++) {
+			$this->DeleteObject($basestations[$x]);
+		}
+		
+		$cameras = $result['cameras'];
+		$basestations = $result['basestations'];
+				
 		for($x=0;$x<count($basestations);$x++) {
 			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
 			IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
@@ -98,7 +102,6 @@ class ArloModule extends IPSModule {
 				}
 			}
 		}
-		
 	}
 	
 	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
@@ -157,6 +160,46 @@ class ArloModule extends IPSModule {
 		}
 	} 
 
+	function DeleteSingleObject($ObjectId) {
+		$object = IPS_GetObject($ObjectId);
+		
+		switch $object['ObjectType'] {
+			case 0: 
+				IPS_DeleteCategory($ObjectId);
+				break;
+			case 1:
+				IPS_DeleteInstance($ObjectId);
+				break;
+			case 2:
+				IPS_DeleteVariable($ObjectId);
+				break;
+			case 3:
+				IPS_DeleteScript($ObjectId, true);
+				break;
+			case 4:
+				IPS_DeleteEvent($ObjectId);
+				break;
+			case 5:
+				IPS_DeleteMedia($ObjectId, true);
+				break;
+			case 6:
+				IPS_DeleteLink($ObjectId);
+				break;
+		}
+	}
+	
+	function DeleteObject($ObjectId) {
+		$childrenIds = IPS_GetChildrenIDs($ObjectId);
+		for($x=0;$x<count($childrenIds);$x++) {
+			$object = IPS_GetObject($childrenIds[$x]);
+			if($object['HasChildren'])
+				$this->DeleteObject($childrenIds[$x]);
+			else {
+				$this->DeleteSingleObject($childrenIds[$x])
+			}
+		}
+		$this->DeleteSingleObject($ObjectId);
+	}
 	
 }
 

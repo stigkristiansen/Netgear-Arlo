@@ -10,7 +10,9 @@
     ],
     "actions":
     [
-        { "type": "Button", "label": "Refresh from Arlo Cloud", "onClick": "UpdateAllDevices($id);" },
+        { "type": "Label", "label": "Enter authentication data, click Apply and then Refresh to download devices from the cloud " },	
+        { "type": "Button", "label": "Refresh", "onClick": "NA_UpdateAllDevices($id);" }
     
     ]
 }
+
