@@ -195,7 +195,7 @@ class ArloModule extends IPSModule {
 			if($object['HasChildren'])
 				$this->DeleteObject($childrenIds[$x]);
 			else {
-				$this->DeleteSingleObject($childrenIds[$x])
+				$this->DeleteSingleObject($childrenIds[$x]);
 			}
 		}
 		$this->DeleteSingleObject($ObjectId);
