@@ -8,6 +8,8 @@ class ArloBasestationModule extends IPSModule {
         parent::Create();
         
         $this->RegisterPropertyBoolean ("Log", true);
+		
+		$this->RegisterPropertyInteger ("ArloInstanceId", 0);
 	}
    
     public function ApplyChanges(){

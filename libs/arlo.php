@@ -5,8 +5,6 @@ class Arlo {
 	// ***********************	
 	// ** Public functions **
 	// ***********************
-
-
 	
 	public function Init ($Email, $Password) {
 		$result = $this->Authenticate($Email, $Password);
@@ -94,7 +92,7 @@ class Arlo {
 		return $this->Arming($BasestationName, false);
 	} 
 	
-	function TakeSnapshot ($CameraName) {
+	public function TakeSnapshot ($CameraName) {
 		if($this->authentication==NULL)
 			return false;	
 		
@@ -121,15 +119,15 @@ class Arlo {
 			return false;
 	}
 	
-	function StartStream($CameraName) {
+	public function StartStream($CameraName) {
 		return $this->StartStreaming($CameraName, true);
 	}
 	
-	function StopStream($CameraName) {
+	public function StopStream($CameraName) {
 		return $this->StartStreaming($CameraName, false);
 	}
 	
-	function DownloadURL($Url, $Filename) {
+	public function DownloadURL($Url, $Filename) {
 	 	$fp = fopen($Filename, 'w+');
 		 
 		if($fp === false){
