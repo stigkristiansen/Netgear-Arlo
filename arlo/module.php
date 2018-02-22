@@ -163,7 +163,7 @@ class ArloModule extends IPSModule {
 	function DeleteSingleObject($ObjectId) {
 		$object = IPS_GetObject($ObjectId);
 		
-		switch $object['ObjectType'] {
+		switch($object['ObjectType']) {
 			case 0: 
 				IPS_DeleteCategory($ObjectId);
 				break;
