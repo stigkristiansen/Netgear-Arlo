@@ -160,7 +160,7 @@ class ArloModule extends IPSModule {
 		}
 	} 
 
-	function DeleteSingleObject($ObjectId) {
+	private function DeleteSingleObject($ObjectId) {
 		$object = IPS_GetObject($ObjectId);
 		
 		switch($object['ObjectType']) {
@@ -188,7 +188,7 @@ class ArloModule extends IPSModule {
 		}
 	}
 	
-	function DeleteObject($ObjectId) {
+	private function DeleteObject($ObjectId) {
 		$childrenIds = IPS_GetChildrenIDs($ObjectId);
 		for($x=0;$x<count($childrenIds);$x++) {
 			$object = IPS_GetObject($childrenIds[$x]);
