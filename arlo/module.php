@@ -14,9 +14,6 @@ class ArloModule extends IPSModule {
    
     public function ApplyChanges(){
         parent::ApplyChanges();
-		
-		//$this->UpdateAllDevices();
-				
     }
 	
 	public function TakeSnapshot (string $CameraName) {
@@ -102,10 +99,17 @@ class ArloModule extends IPSModule {
 					IPS_SetParent($cameraInsId, $basestationInsId);	
 					IPS_SetProperty($cameraInsId, "ArloInstanceId", $this->InstanceID);
 					IPS_ApplyChanges($cameraInsId);
+					
+					$camId = CreateMediaByName($cameraInsId, "Snapshot", 1);
+					$filename = "../../media/".$cameras[$y]->deviceName".jpg";
+					if($this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename))
+						IPS_SetMediaFile($camId, $fileName, false);
 				}
 			}
 		}
 	}
+	
+
 	
 	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
 		$email = $this->ReadPropertyString("email");
@@ -203,7 +207,17 @@ class ArloModule extends IPSModule {
 		}
 		$this->DeleteSingleObject($ObjectId);
 	}
-	
+
+	function CreateMediaByName($Id, $Name, $Type){
+		$mId = IPS_GetMediaIDByName($Name, $Id);
+		if($mId === false) {
+		  $mId = IPS_CreateMedia($Type);
+		  IPS_SetParent($mId, $Id);
+		  IPS_SetName($mId, $Name);
+		  IPS_SetInfo($mId, "This media object was created by the Arlo module");
+		}
+		return $mId;
+	}	
 }
 
 ?>
