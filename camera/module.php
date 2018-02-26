@@ -40,7 +40,7 @@ class ArloCameraModule extends IPSModule {
 		if(strlen($url)>0) {
 			$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 			if(NA_DownloadURL($InstanceId, $url, $filename)) {
-				$imgId = IPS_GetObjectIDByIdent($this->InstanceID, $cameraName."Snapshot");
+				$imgId = IPS_GetObjectIDByIdent($cameraName."Snapshot", $this->InstanceID);
 				if($imgId!==false)
 					IPS_SetMediaFile($imgId, $filename, false);
 			}
