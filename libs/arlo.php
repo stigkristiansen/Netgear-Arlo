@@ -128,6 +128,8 @@ class Arlo {
 		$data = '{"data":[{"createdDate":"'.$LibraryItem->createdDate.'", "deviceId":"'.$LibraryItem->deviceId.'", "utcCreatedDate":'.$LibraryItem->utcCreatedDate.'}]}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'User-Agent: Symcon');
 		
+		IPS_LogMessage("DeleteItem", $data);
+		
 		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/library/recycle");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($ch, CURLOPT_POST,           1 );
