@@ -103,10 +103,10 @@ class ArloModule extends IPSModule {
 					
 					IPS_ApplyChanges($cameraInsId);
 					
-					$camId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1);
+					$imgId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1, $cameras[$y]->deviceName);
 					$filename = __DIR__ . "/../../../media/".$cameras[$y]->deviceName.".jpg";
 					if($this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename))
-						IPS_SetMediaFile($camId, $filename, false);
+						IPS_SetMediaFile($imgId, $filename, false);
 				}
 			}
 		}
@@ -211,13 +211,14 @@ class ArloModule extends IPSModule {
 		$this->DeleteSingleObject($ObjectId);
 	}
 
-	private function CreateMediaByName($Id, $Name, $Type){
+	private function CreateMediaByName($Id, $MediaName, $Type, $CameraName){
 		$mId = @IPS_GetMediaIDByName($Name, $Id);
 		if($mId === false) {
 		  $mId = IPS_CreateMedia($Type);
 		  IPS_SetParent($mId, $Id);
-		  IPS_SetName($mId, $Name);
+		  IPS_SetName($mId, $MediaName);
 		  IPS_SetInfo($mId, "This media object was created by the Arlo module");
+		  IPS_SetIdent($mId, $CameraName."Snapshot");
 		}
 		return $mId;
 	}	
