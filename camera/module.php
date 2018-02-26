@@ -19,8 +19,8 @@ class ArloCameraModule extends IPSModule {
 	
 	public function TakeSnapshot() {
 		$InstancdeId = $this->ReadPropertyInteger("ArloModuleInstanceId");
-		$cameraName = = $this->ReadPropertyString("ArloCameraName");
-		$cameraDeviceId = = $this->ReadPropertyString("ArloCameraDeviceId");
+		$cameraName = $this->ReadPropertyString("ArloCameraName");
+		$cameraDeviceId = $this->ReadPropertyString("ArloCameraDeviceId");
 		
 		$now = microtime(true)*1000;
 		NA_TakeSnapshot($InstancdeId, $cameraName);
