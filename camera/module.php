@@ -31,7 +31,7 @@ class ArloCameraModule extends IPSModule {
 		$url = "";
 		for($x=0;$x<Count($library);$x++) {
 			$lastModified = $library[$x]->lastModified;
-			if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
+			if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now && $lastModified < $now+10000) {
 				$url = $library[$x]->presignedContentUrl; 
 				break;
 			}
