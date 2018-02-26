@@ -1,6 +1,8 @@
 {
     "elements":
     [
+		{ "type": "Label", "label": "Delete image from Arlo.com after snapshot" },
+		{ "type": "CheckBox", "name": "deleteimage", "caption": "Delete" },
 		{ "type": "Label", "label": "Other settings" },
 		{ "type": "CheckBox", "name": "Log", "caption": "Enable logging:" }
     ],

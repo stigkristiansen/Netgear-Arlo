@@ -27,7 +27,6 @@ class ArloModule extends IPSModule {
 				return false;
 			}
 			
-			IPS_LogMessage("Test", "Started Streaming");
 			if($arlo->StartStream($CameraName)===false) {
 				$arlo->Logout();
 				return false;
@@ -39,7 +38,7 @@ class ArloModule extends IPSModule {
 			
 			$arlo->StopStream($CameraName);
 			$arlo->Logout();
-			IPS_LogMessage("Test", "Stopped Streaming");
+			
 			return true;
 		} else
 			return false;
