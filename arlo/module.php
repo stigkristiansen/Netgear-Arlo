@@ -134,7 +134,7 @@ class ArloModule extends IPSModule {
 			return false;
 	}
 	
-	public function DeleteLibrayItem($LibraryItem) {
+	public function DeleteLibraryItem($LibraryItem) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
 		
