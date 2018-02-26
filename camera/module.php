@@ -8,9 +8,10 @@ class ArloCameraModule extends IPSModule {
         parent::Create();
         
         $this->RegisterPropertyBoolean ("Log", true);
+		$this->RegisterPropertyBoolean ("DeleteImage", true);
 		$this->RegisterPropertyInteger ("ArloModuleInstanceId", 0);
 		$this->RegisterPropertyString ("ArloCameraName", "");
-		$this->RegisterPropertyString ("ArloCameraDeviceId", "");		
+		$this->RegisterPropertyString ("ArloCameraDeviceId", "");
 	}
    
     public function ApplyChanges(){
@@ -45,7 +46,9 @@ class ArloCameraModule extends IPSModule {
 				if($imgId!==false)
 					IPS_SetMediaFile($imgId, $filename, false);
 			}
-			NA_DeleteLibraryItem($InstanceId, $item);
+			
+			if($this->ReadPropertyBoolean("DeleteImage"))
+				NA_DeleteLibraryItem($InstanceId, $item);
 		}
 	}
 	
