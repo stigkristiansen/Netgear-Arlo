@@ -116,7 +116,7 @@ class ArloModule extends IPSModule {
 	
 
 	
-	public function GetLibrary (string $FromYYYYMMDD, string $ToYYYYMMDD) {
+	public function GetLibrary(string $FromYYYYMMDD, string $ToYYYYMMDD) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
 		
@@ -130,6 +130,25 @@ class ArloModule extends IPSModule {
 			$arlo->Logout();
 			
 			return $library;
+		} else
+			return false;
+	}
+	
+	public function DeleteLibrayItem($LibraryItem) {
+		$email = $this->ReadPropertyString("email");
+		$password = $this->ReadPropertyString("password");
+		
+		if(strlen($password)>0 && strlen($email)>0) {
+			$arlo = new Arlo();
+			if ($arlo->Init($email,$password)===false) {
+				$arlo->Logout();
+				return false;
+			}
+			
+			$result = $arlo->DeleteLibraryItem($LibraryItem);
+			$arlo->Logout();
+			
+			return $result;
 		} else
 			return false;
 	}

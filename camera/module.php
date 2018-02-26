@@ -32,18 +32,20 @@ class ArloCameraModule extends IPSModule {
 		for($x=0;$x<Count($library);$x++) {
 			$lastModified = $library[$x]->lastModified;
 			if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now && $lastModified < $now+10000) {
-				$url = $library[$x]->presignedContentUrl; 
+				//$url = $library[$x]->presignedContentUrl; 
+				$item = $library[$x];
 				break;
 			}
 		}
 		
-		if(strlen($url)>0) {
+		if(isset($item)) {
 			$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
-			if(NA_DownloadURL($InstanceId, $url, $filename)) {
+			if(NA_DownloadURL($InstanceId, $item->presignedContentUrl, $filename)) {
 				$imgId = IPS_GetObjectIDByIdent($cameraName."Snapshot", $this->InstanceID);
 				if($imgId!==false)
 					IPS_SetMediaFile($imgId, $filename, false);
 			}
+			NA_DeleteLibraryItem($InstanceId, $item);
 		}
 	}
 	
