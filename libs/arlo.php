@@ -138,6 +138,8 @@ class Arlo {
 		
 		$result=json_decode(curl_exec ($ch));
 		
+		IPS_LogMessage("DeleteItem", json_encode($result));
+		
 		if(isset($result->success) && $result->success)
 		 	return true;
 		else
