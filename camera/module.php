@@ -18,15 +18,13 @@ class ArloCameraModule extends IPSModule {
     public function ApplyChanges(){
         parent::ApplyChanges();
 		
-		$scriptId = IPS_GetObjectIDByIdent("scriptsnapshot", $this->InstanceID);
+		$scriptId = @IPS_GetObjectIDByIdent("scriptsnapshot", $this->InstanceID);
 		if($scriptId===false) {
 			$script = "<? NAC_TakeSnapshot(".$this->InstanceID."); ?>";
 			$scriptId = $this->RegisterScript("scriptsnapshot", "_Snapshot", $script, 0);
-			
-			
 		} 
 			
-		$eventId = IPS_GetObjectIDByIdent("eventsnapshot", $scriptId);
+		$eventId = @IPS_GetObjectIDByIdent("eventsnapshot", $scriptId);
 		if($eventId===false) {
 			$eventId = IPS_CreateEvent(1);
 			IPS_SetParent($eventId, $scriptId);
