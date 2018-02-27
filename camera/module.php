@@ -17,7 +17,7 @@ class ArloCameraModule extends IPSModule {
     public function ApplyChanges(){
         parent::ApplyChanges();
 		
-		$script = "<? NAC_TakeSnapshot(".$this->InstanceID."); ?>");
+		$script = "<? NAC_TakeSnapshot(".$this->InstanceID."); ?>";
 		//file_get_contents(__DIR__ . "/../libs/_Snapshot.php");
 		$scriptId = $this->RegisterScript("scriptsnapshot", "_Snapshot", $script, 0);
 		
