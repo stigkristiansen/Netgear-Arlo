@@ -1,4 +1,5 @@
 <?
+require_once(__DIR__ . "/../libs/logging.php");
 
 class Arlo {
 
@@ -160,7 +161,7 @@ class Arlo {
 		$ch = curl_init($Url);
 		 
 		curl_setopt($ch, CURLOPT_FILE, $fp);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 45);
 		 
 		curl_exec($ch);
 		 
@@ -227,6 +228,8 @@ class Arlo {
 	}
 	
 	function Arming ($BasestationName, $Armed) {
+		$log = new Logging(false, "Arlo Class");
+		
 		if($this->authentication==NULL)
 			return false;	
 		
@@ -251,15 +254,27 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
 		
-		$result=json_decode(curl_exec ($ch));
+		$result=curl_exec ($ch);
+		
+		if($result!==false){
+			$originalResult = $result;
+			$result = json_decode($result);
+			if(isset($result->success) && $result->success)
+				return true;
+			else if(isset($result->success) && !$result->success)
+				$log->LogMessageError("Arming: ".$result->data->message);
+			else
+				$log->LogMessageError("Arming: Unkonwn JSON returned: ".$originalResult);
+		} else 
+			$log->LogMessageError("Arming: The http request failed");
 				
-		if(isset($result->success) && $result->success)
-		 	return true;
-		else
-			return false;
+		return false;
+			
 	}
 	
 	function Authenticate($Email, $Password) {
+		$log = new Logging(false, "Arlo Class");
+		
 		$ch = curl_init();
 		
 		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/login/v2" );
@@ -268,12 +283,21 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_POSTFIELDS,     "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon')); 
 		
-		$result=json_decode(curl_exec ($ch));
+		$result=curl_exec ($ch);
 		
-		if(isset($result->success) && $result->success)
-			return $result->data;
-		else
-			return false;
+		if($result!==false) {
+			$originalResult = $result;
+			$result = json_decode($result);
+			if(isset($result->success) && $result->success)
+				return $result->data;
+			else if(isset($result->success) && !$result->success)
+				$log->LogMessageError("Authenticate: ".$result->data->message);
+			else
+				$log->LogMessageError("Authenticate: Unkonwn JSON returned: ".$originalResult);
+		} else 
+			$log->LogMessageError("Authenticate: The http request failed");
+		
+		return false;
 	}
 	
 	function GetDevices ($Authentication) {
