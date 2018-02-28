@@ -196,6 +196,8 @@ class Arlo {
 	// ***********************
 	
 	function StartStreaming ($CameraName, $State) {
+		$log = new Logging(false, "Arlo Class");
+		
 		if($this->authentication==NULL)
 			return false;	
 		
@@ -219,12 +221,21 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
 		
-		$result=json_decode(curl_exec ($ch));
+		$result=curl_exec($ch);
 		
-		if(isset($result->success) && $result->success)
-		 	return true;
-		else
-			return false;
+		if($result!==false){
+			$originalResult = $result;
+			$result = json_decode($result);
+			if(isset($result->success) && $result->success)
+				return true;
+			else if(isset($result->success) && !$result->success)
+				$log->LogMessageError("StartStreaming: ".$result->data->message);
+			else
+				$log->LogMessageError("StartStreaming: Unkonwn JSON returned: ".$originalResult);
+		} else
+			$log->LogMessageError("StartStreaming: The http post request failed");
+		
+		return false;
 	}
 	
 	function Arming ($BasestationName, $Armed) {
@@ -266,7 +277,7 @@ class Arlo {
 			else
 				$log->LogMessageError("Arming: Unkonwn JSON returned: ".$originalResult);
 		} else 
-			$log->LogMessageError("Arming: The http request failed");
+			$log->LogMessageError("Arming: The http post request failed");
 				
 		return false;
 			
@@ -283,7 +294,7 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_POSTFIELDS,     "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon')); 
 		
-		$result=curl_exec ($ch);
+		$result=curl_exec($ch);
 		
 		if($result!==false) {
 			$originalResult = $result;
@@ -295,24 +306,35 @@ class Arlo {
 			else
 				$log->LogMessageError("Authenticate: Unkonwn JSON returned: ".$originalResult);
 		} else 
-			$log->LogMessageError("Authenticate: The http request failed");
+			$log->LogMessageError("Authenticate: The http post request failed");
 		
 		return false;
 	}
 	
 	function GetDevices ($Authentication) {
+		$log = new Logging(false, "Arlo Class");
+		
 		$ch = curl_init();
 		
 		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/devices" );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Authorization: '.$Authentication->token)); 
 		
-		$result=json_decode(curl_exec ($ch));
+		$result=curl_exec($ch);
 		
-		if(isset($result->success) && $result->success)
-			return $result->data;
-		else
-			return false;
+		if($result!==false) {
+			$originalResult = $result;
+			$result = json_decode($result);
+			if(isset($result->success) && $result->success)
+				return $result->data;
+			else if($result->success) && !$result->success)
+				$log->LogMessageError("GetDevices: ".$result->data->message);
+			else
+				$log->LogMessageError("GetDevices: Unkonwn JSON returned: ".$originalResult);
+		} else
+			$log->LogMessageError("GetDevices: The http request failed");
+		
+		return false;
 	}
 			
 	function GetDeviceType($Devices, $DeviceType) {
