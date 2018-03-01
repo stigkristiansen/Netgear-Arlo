@@ -2,11 +2,29 @@
 require_once(__DIR__ . "/../libs/logging.php");
 
 class Arlo {
+	
+	// ***********************	
+	// ** Constructor       **
+	// ***********************
+	
+	function __construct($EnableLogging) {
+		$this->log = $EnableLogging;
+	}
+	
+	// ************************	
+	// ** Private properties **
+	// ************************
+	
+	private $cameras = NULL;
+	private $basestations = NULL;
+	private $authentication = NULL;
+	private $log = false;
 
+	
 	// ***********************	
 	// ** Public functions **
 	// ***********************
-	
+			
 	public function Init ($Email, $Password) {
 		$result = $this->Authenticate($Email, $Password);
 		if($result===false)
@@ -41,31 +59,18 @@ class Arlo {
 		
 		$result = $this->HttpRequest("put", $url , $headers, NULL, false);
 		
-		/*$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/logout" );
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon')); 
-		
-		curl_exec ($ch);
-		*/
-		
 		$this->authentication = NULL;
 		$this->cameras = NULL;
 		$this->basestations = NULL;
 		
 		return true;
-		
 	}
 	
 	public function GetAllDevices() {
 		if($this->authentication==NULL)
 			return false;
 		
-		$devices = Array("cameras" => $this->cameras, "basestations" => $this->basestations);
-		
-		return $devices;
+		return Array("cameras" => $this->cameras, "basestations" => $this->basestations);
 	}
 	
 	public function GetLibrary($FromYYYYMMDD, $ToYYYYMMDD) {
@@ -76,29 +81,7 @@ class Arlo {
 		$data = '{"dateFrom": "'.$FromYYYYMMDD.'","dateTo": "'.$ToYYYYMMDD.'"}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token);
 		
-		$result = $this->HttpRequest("post", $url , $headers, $data, true);
-		
-		return $result;
-		
-		/*
-		$ch = curl_init();
-		
-		$data = '{"dateFrom": "'.$FromYYYYMMDD.'","dateTo": "'.$ToYYYYMMDD.'"}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token);
-			
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/library" );
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_POST,           1 );
-		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
-		
-		$result=json_decode(curl_exec ($ch));
-		
-		if(isset($result->success) && $result->success)
-		 	return $result->data;
-		else
-			return false;
-		*/
+		return $this->HttpRequest("post", $url , $headers, $data, true);
 	}
 	
 	public function Arm($BasestationName) {
@@ -121,30 +104,7 @@ class Arlo {
 		$data = '{"xcloudId":"'.$camera->xCloudId.'","parentId":"'.$camera->parentId.'","deviceId":"'.$camera->deviceId.'","olsonTimeZone":"'.$camera->properties->olsonTimeZone.'"}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$camera->xCloudId, 'User-Agent: Symcon');
 		
-		$result = $this->HttpRequest("post", $url , $headers, $data, false);
-		
-		return $result;
-
-		/*
-		$ch = curl_init();
-		
-		$data = '{"xcloudId":"'.$camera->xCloudId.'","parentId":"'.$camera->parentId.'","deviceId":"'.$camera->deviceId.'","olsonTimeZone":"'.$camera->properties->olsonTimeZone.'"}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$camera->xCloudId, 'User-Agent: Symcon');
-		
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/devices/takeSnapshot");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_POST,           1 );
-		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
-		
-		$result=json_decode(curl_exec ($ch));
-		
-		if(isset($result->success) && $result->success)
-		 	return true;
-		else
-			return false;
-		
-		*/
+		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
 	
 	public function DeleteLibraryItem($LibraryItem) {
@@ -155,31 +115,7 @@ class Arlo {
 		$data = '{"data":[{"createdDate":"'.$LibraryItem->createdDate.'", "deviceId":"'.$LibraryItem->deviceId.'", "utcCreatedDate":'.$LibraryItem->utcCreatedDate.'}]}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'User-Agent: Symcon');
 		
-		$result = $this->HttpRequest("post", $url , $headers, $data, false);
-		
-		return $result;
-		
-		/*
-		
-		$ch = curl_init();
-						
-		$data = '{"data":[{"createdDate":"'.$LibraryItem->createdDate.'", "deviceId":"'.$LibraryItem->deviceId.'", "utcCreatedDate":'.$LibraryItem->utcCreatedDate.'}]}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'User-Agent: Symcon');
-		
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/library/recycle");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_POST,           1 );
-		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
-		
-		$result=json_decode(curl_exec ($ch));
-		
-		if(isset($result->success) && $result->success)
-		 	return true;
-		else
-			return false;
-		
-		*/
+		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
 	
 	public function StartStream($CameraName) {
@@ -220,16 +156,7 @@ class Arlo {
 	}
 	    
 		
-	// ***********************	
-	// ** Private properties **
-	// ***********************
 	
-	private $cameras = NULL;
-	private $basestations = NULL;
-	private $authentication = NULL;
-
-
-
 	// ***********************	
 	// ** Private functions **
 	// ***********************
@@ -253,37 +180,7 @@ class Arlo {
 		$data = '{"to":"'.$camera->deviceId.'","from":"'.$this->authentication->userId.'_web","resource":"cameras/'.$camera->deviceId.'","action":"set","publishResponse":true,"transId":"web!8e3a372f.8adff!1509302776732","properties":{"activityState":"'.$activityState.'","cameraId":"'.$camera->deviceId.'"}}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudId: '.$camera->xCloudId, 'User-Agent: Symcon');
 		
-		$result = $this->HttpRequest("post", $url , $headers, $data, false);
-		
-		return $result;
-		
-		/*$ch = curl_init();
-		
-		$data = '{"to":"'.$camera->deviceId.'","from":"'.$this->authentication->userId.'_web","resource":"cameras/'.$camera->deviceId.'","action":"set","publishResponse":true,"transId":"web!8e3a372f.8adff!1509302776732","properties":{"activityState":"'.$activityState.'","cameraId":"'.$camera->deviceId.'"}}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudId: '.$camera->xCloudId, 'User-Agent: Symcon');
-		
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/devices/startStream");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_POST,           1 );
-		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
-		
-		$result=curl_exec($ch);
-		
-		if($result!==false){
-			$originalResult = $result;
-			$result = json_decode($result);
-			if(isset($result->success) && $result->success)
-				return true;
-			else if(isset($result->success) && !$result->success)
-				$log->LogMessageError("StartStreaming: ".$result->data->message);
-			else
-				$log->LogMessageError("StartStreaming: Unkonwn JSON returned: ".$originalResult);
-		} else
-			$log->LogMessageError("StartStreaming: The http post request failed");
-		
-		return false;
-		*/
+		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
 	
 	function Arming ($BasestationName, $Armed) {
@@ -306,41 +203,7 @@ class Arlo {
 		$data =  '{"from":"'.$this->authentication->userId.'_web","to":"'.$basestation->deviceId.'","action":"set","resource":"modes","transId":"web!bvghopiy.asdfqweriopuzxcvbghn","publishResponse":true,"properties":{"active":"'.$mode.'"}}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId);
 		
-		$result = $this->HttpRequest("post", $url , $header, $data, false);
-		
-		return $result;
-		
-		/*
-				
-		$ch = curl_init();
-		
-		$data =  '{"from":"'.$this->authentication->userId.'_web","to":"'.$basestation->deviceId.'","action":"set","resource":"modes","transId":"web!bvghopiy.asdfqweriopuzxcvbghn","publishResponse":true,"properties":{"active":"'.$mode.'"}}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId);
-			
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/devices/notify/".$basestation->deviceId);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_POST,           1 );
-		curl_setopt($ch, CURLOPT_POSTFIELDS,     $data); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers); 
-		
-		$result=curl_exec ($ch);
-		
-		if($result!==false){
-			$originalResult = $result;
-			$result = json_decode($result);
-			if(isset($result->success) && $result->success)
-				return true;
-			else if(isset($result->success) && !$result->success)
-				$log->LogMessageError("Arming: ".$result->data->message);
-			else
-				$log->LogMessageError("Arming: Unkonwn JSON returned: ".$originalResult);
-		} else 
-			$log->LogMessageError("Arming: The http post request failed");
-				
-		return false;
-		
-		*/
-			
+		return = $this->HttpRequest("post", $url , $header, $data, false);
 	}
 	
 	function Authenticate($Email, $Password) {
@@ -350,34 +213,7 @@ class Arlo {
 		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
 		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
 		
-		$result = $this->HttpRequest("post", $url , $header, $data, true);
-						
-		return $result;
-		
-		/*$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/login/v2" );
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_POST,           1 );
-		curl_setopt($ch, CURLOPT_POSTFIELDS,     "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon')); 
-		
-		$result=curl_exec($ch);
-		
-		if($result!==false) {
-			$originalResult = $result;
-			$result = json_decode($result);
-			if(isset($result->success) && $result->success)
-				return $result->data;
-			else if(isset($result->success) && !$result->success)
-				$log->LogMessageError("Authenticate: ".$result->data->message);
-			else
-				$log->LogMessageError("Authenticate: Unkonwn JSON returned: ".$originalResult);
-		} else 
-			$log->LogMessageError("Authenticate: The http post request failed");
-		
-		return false;
-		*/
+		return $this->HttpRequest("post", $url , $header, $data, true);
 	}
 	
 	function GetDevices ($Authentication) {
@@ -387,35 +223,7 @@ class Arlo {
 		$header = array('Authorization: '.$Authentication->token);
 		$data = NULL;
 		
-		$result = $this->HttpRequest("get", $url , $header, $data, true);
-		
-		return $result;
-		
-		/*
-		$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/devices" );
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Authorization: '.$Authentication->token)); 
-		
-		$result=curl_exec($ch);
-		
-		if($result!==false) {
-			$originalResult = $result;
-			$result = json_decode($result);
-			if(isset($result->success) && $result->success)
-				return $result->data;
-			else if(isset($result->success) && !$result->success)
-				$log->LogMessageError("GetDevices: ".$result->data->message);
-			else
-				$log->LogMessageError("GetDevices: Unkonwn JSON returned: ".$originalResult);
-		} else
-			$log->LogMessageError("GetDevices: The http request failed");
-		
-		return false;
-		
-		*/
-		
+		return $this->HttpRequest("get", $url , $header, $data, true);
 	}
 			
 	function GetDeviceType($Devices, $DeviceType) {

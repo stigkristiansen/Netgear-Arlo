@@ -25,7 +25,7 @@ class ArloModule extends IPSModule {
 		$log->LogMessage("Preparing to take a snapshot..."); 
 				
 		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo();
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 			if ($arlo->Init($email,$password)===false) {
 				$arlo->Logout();
 				$log->LogMessage("Failed to log on to the Arlo cloud"); 
@@ -68,7 +68,7 @@ class ArloModule extends IPSModule {
 		$log->LogMessage("Preparing to retrieve all devices from the Arlo cloud..."); 
 		
 		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo();
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 			if ($arlo->Init($email,$password)===false) {
 				$arlo->Logout();
 				$log->LogMessage("Failed to log on to the Arlo cloud"); 
@@ -91,7 +91,6 @@ class ArloModule extends IPSModule {
 			
 		return false;
 	}
-	
 		
 	public function UpdateAllDevices() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
@@ -104,7 +103,7 @@ class ArloModule extends IPSModule {
 			return;
 		}
 		
-		// Cleanup old devices
+		// Clean up old devices
 		$log->LogMessage("Deleting existing instances in Symcon"); 
 		$cameras = IPS_GetInstanceListByModuleID("{2B472806-C471-4104-9B61-EA2F17588A33}");
 		$basestations = IPS_GetInstanceListByModuleID("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
@@ -163,7 +162,7 @@ class ArloModule extends IPSModule {
 		$password = $this->ReadPropertyString("password");
 		
 		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo();
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 			if ($arlo->Init($email,$password)===false) {
 				$arlo->Logout();
 				$log->LogMessage("Failed to log on to the Arlo cloud");
@@ -194,7 +193,7 @@ class ArloModule extends IPSModule {
 		$password = $this->ReadPropertyString("password");
 		
 		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo();
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 			if ($arlo->Init($email,$password)===false) {
 				$arlo->Logout();
 				$log->LogMessage("Failed to log on to the Arlo cloud");
@@ -222,7 +221,7 @@ class ArloModule extends IPSModule {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to downloaded an image from the Arlo cloud");
 		
-		$arlo = new Arlo();
+		$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 		
 		$result = $arlo->DownloadURL($Url, $Filename);
 		if($result)
@@ -241,7 +240,7 @@ class ArloModule extends IPSModule {
 		$password = $this->ReadPropertyString("password");
 		
 		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo();
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 			if ($arlo->Init($email,$password)===false) {
 				$log->LogMessage("Failed to log on to the Arlo cloud"); 
 				$arlo->Logout();
@@ -264,6 +263,7 @@ class ArloModule extends IPSModule {
 		
 		return false;
 	}  			
+	
 	public function Disarm(string $BasestationName) {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to disarm the basestation ".$BasestationName);
@@ -272,7 +272,7 @@ class ArloModule extends IPSModule {
 		$password = $this->ReadPropertyString("password");
 		
 		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo();
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
 			if ($arlo->Init($email,$password)===false) {
 				$log->LogMessage("Failed to log on to the Arlo cloud"); 
 				$arlo->Logout();
