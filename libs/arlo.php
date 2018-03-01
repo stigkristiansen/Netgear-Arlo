@@ -291,7 +291,7 @@ class Arlo {
 		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
 		
 		$result = $this->HttpRequest("post", $url , $header, $data=NULL);
-		
+						
 		return $result;
 		
 		/*$ch = curl_init();
@@ -387,7 +387,7 @@ class Arlo {
 		return false;
 	}
 	
-	private function HttpRequest($Type, $Url, $Header, $Data=NULL, $ReturnData=True) {
+	private function HttpRequest($Type, $Url, $Headers, $Data=NULL, $ReturnData=True) {
 		$ch = curl_init();
 		
 		switch(strtolower($Type)) {
