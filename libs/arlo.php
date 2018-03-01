@@ -122,7 +122,17 @@ class Arlo {
 	
 	public function DeleteLibraryItem($LibraryItem) {
 		if($this->authentication==NULL)
-			return false;	
+			return false;
+
+		$url = "https://arlo.netgear.com/hmsweb/users/library/recycle";
+		$data = '{"data":[{"createdDate":"'.$LibraryItem->createdDate.'", "deviceId":"'.$LibraryItem->deviceId.'", "utcCreatedDate":'.$LibraryItem->utcCreatedDate.'}]}';
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'User-Agent: Symcon');
+		
+		$result = $this->HttpRequest("post", $url , $headers, $data, false);
+		
+		return $result;
+		
+		/*
 		
 		$ch = curl_init();
 						
@@ -141,6 +151,8 @@ class Arlo {
 		 	return true;
 		else
 			return false;
+		
+		*/
 	}
 	
 	public function StartStream($CameraName) {
