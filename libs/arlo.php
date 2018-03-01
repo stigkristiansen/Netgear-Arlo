@@ -286,7 +286,15 @@ class Arlo {
 	function Authenticate($Email, $Password) {
 		$log = new Logging(false, "Arlo Class");
 		
-		$ch = curl_init();
+		$url = "https://arlo.netgear.com/hmsweb/login/v2";
+		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"); 
+		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon'));
+		
+		$result = HttpRequest("post", $url , $header, $data=NULL);
+		
+		return $result;
+		
+		/*$ch = curl_init();
 		
 		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/login/v2" );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -309,6 +317,7 @@ class Arlo {
 			$log->LogMessageError("Authenticate: The http post request failed");
 		
 		return false;
+		*/
 	}
 	
 	function GetDevices ($Authentication) {
@@ -374,6 +383,46 @@ class Arlo {
 			if(strtoupper($this->basestations[$x]->deviceName)===$BasestationName)
 				return $this->basestations[$x];
 		}
+		
+		return false;
+	}
+	
+	private function HttpRequest($Type, $Url, $Header, $Data=NULL, $ReturnData=True) {
+		$ch = curl_init();
+		
+		switch(strtolower($Type)) {
+			case "put":
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+				break:
+			case "post":
+				curl_setopt($ch, CURLOPT_POST, 1 );
+				break
+			case "get":
+				// Get is default for cURL
+		}
+		
+		curl_setopt($ch, CURLOPT_URL, $Url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $Headers);
+
+		if($Data!=NULL)
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $Data); 
+		
+		$result=curl_exec($ch);
+		
+		if($result!==false){
+			$originalResult = $result;
+			$result = json_decode($result);
+			if(isset($result->success) && $result->success) {
+				if($ReturnData)
+					return $result->data;
+				return true;
+			} else if(isset($result->success) && !$result->success)
+				$log->LogMessageError("HttpRequest: ".$result->data->message);
+			else
+				$log->LogMessageError("HttpRequest: Unkonwn JSON returned: ".$originalResult);
+		} else
+			$log->LogMessageError("HttpRequest: The http ".$Type." request failed");
 		
 		return false;
 	}
