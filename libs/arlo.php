@@ -198,7 +198,7 @@ class Arlo {
 		$data =  '{"from":"'.$this->authentication->userId.'_web","to":"'.$basestation->deviceId.'","action":"set","resource":"modes","transId":"web!bvghopiy.asdfqweriopuzxcvbghn","publishResponse":true,"properties":{"active":"'.$mode.'"}}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId);
 		
-		return = $this->HttpRequest("post", $url , $header, $data, false);
+		return $this->HttpRequest("post", $url , $header, $data, false);
 	}
 	
 	function Authenticate($Email, $Password) {
