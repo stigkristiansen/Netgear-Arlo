@@ -336,7 +336,7 @@ class Arlo {
 			$result = json_decode($result);
 			if(isset($result->success) && $result->success)
 				return $result->data;
-			else if($result->success) && !$result->success)
+			else if(isset($result->success) && !$result->success)
 				$log->LogMessageError("GetDevices: ".$result->data->message);
 			else
 				$log->LogMessageError("GetDevices: Unkonwn JSON returned: ".$originalResult);
