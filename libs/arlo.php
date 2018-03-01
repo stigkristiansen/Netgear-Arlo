@@ -35,7 +35,13 @@ class Arlo {
 	}
 	
 	public function Logout() {
-		$ch = curl_init();
+		
+		$url = "https://arlo.netgear.com/hmsweb/logout";
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
+		
+		$result = $this->HttpRequest("put", $url , $headers, NULL, false);
+		
+		/*$ch = curl_init();
 		
 		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/logout" );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -43,6 +49,7 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon')); 
 		
 		curl_exec ($ch);
+		*/
 		
 		$this->authentication = NULL;
 		$this->cameras = NULL;
@@ -294,6 +301,16 @@ class Arlo {
 			$mode = "mode1";  //Arming
 		else
 			$mode = "mode0";  //Disarming
+		
+		$url = "https://arlo.netgear.com/hmsweb/users/devices/notify/".$basestation->deviceId;
+		$data =  '{"from":"'.$this->authentication->userId.'_web","to":"'.$basestation->deviceId.'","action":"set","resource":"modes","transId":"web!bvghopiy.asdfqweriopuzxcvbghn","publishResponse":true,"properties":{"active":"'.$mode.'"}}';
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId);
+		
+		$result = $this->HttpRequest("post", $url , $header, $data, false);
+		
+		return $result;
+		
+		/*
 				
 		$ch = curl_init();
 		
@@ -321,6 +338,8 @@ class Arlo {
 			$log->LogMessageError("Arming: The http post request failed");
 				
 		return false;
+		
+		*/
 			
 	}
 	
