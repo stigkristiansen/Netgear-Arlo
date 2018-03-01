@@ -393,12 +393,13 @@ class Arlo {
 		switch(strtolower($Type)) {
 			case "put":
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-				break:
+				break;
 			case "post":
 				curl_setopt($ch, CURLOPT_POST, 1 );
-				break
+				break;
 			case "get":
 				// Get is default for cURL
+				break;
 		}
 		
 		curl_setopt($ch, CURLOPT_URL, $Url);
