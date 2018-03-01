@@ -198,23 +198,23 @@ class Arlo {
 		$data =  '{"from":"'.$this->authentication->userId.'_web","to":"'.$basestation->deviceId.'","action":"set","resource":"modes","transId":"web!bvghopiy.asdfqweriopuzxcvbghn","publishResponse":true,"properties":{"active":"'.$mode.'"}}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId);
 		
-		return $this->HttpRequest("post", $url , $header, $data, false);
+		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
 	
 	function Authenticate($Email, $Password) {
 		$url = "https://arlo.netgear.com/hmsweb/login/v2";
 		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
-		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
 		
-		return $this->HttpRequest("post", $url , $header, $data, true);
+		return $this->HttpRequest("post", $url , $headers, $data, true);
 	}
 	
 	function GetDevices ($Authentication) {
 		$url="https://arlo.netgear.com/hmsweb/users/devices";
-		$header = array('Authorization: '.$Authentication->token);
+		$headers = array('Authorization: '.$Authentication->token);
 		$data = NULL;
 		
-		return $this->HttpRequest("get", $url , $header, $data, true);
+		return $this->HttpRequest("get", $url , $headers, $data, true);
 	}
 			
 	function GetDeviceType($Devices, $DeviceType) {
