@@ -210,7 +210,15 @@ class Arlo {
 		else
 			$activityState = "stopUserStream";  
 		
-		$ch = curl_init();
+		$url = "https://arlo.netgear.com/hmsweb/users/devices/startStream";
+		$data = '{"to":"'.$camera->deviceId.'","from":"'.$this->authentication->userId.'_web","resource":"cameras/'.$camera->deviceId.'","action":"set","publishResponse":true,"transId":"web!8e3a372f.8adff!1509302776732","properties":{"activityState":"'.$activityState.'","cameraId":"'.$camera->deviceId.'"}}';
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudId: '.$camera->xCloudId, 'User-Agent: Symcon');
+		
+		$result = $this->HttpRequest("post", $url , $headers, $data, false);
+		
+		return $result;
+		
+		/*$ch = curl_init();
 		
 		$data = '{"to":"'.$camera->deviceId.'","from":"'.$this->authentication->userId.'_web","resource":"cameras/'.$camera->deviceId.'","action":"set","publishResponse":true,"transId":"web!8e3a372f.8adff!1509302776732","properties":{"activityState":"'.$activityState.'","cameraId":"'.$camera->deviceId.'"}}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudId: '.$camera->xCloudId, 'User-Agent: Symcon');
@@ -236,6 +244,7 @@ class Arlo {
 			$log->LogMessageError("StartStreaming: The http post request failed");
 		
 		return false;
+		*/
 	}
 	
 	function Arming ($BasestationName, $Armed) {
