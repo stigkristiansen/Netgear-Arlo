@@ -413,6 +413,8 @@ class Arlo {
 		
 		$result=curl_exec($ch);
 		
+		$log->LogMessageError("HttpRequest: Returned data: ".$result;
+		
 		if($result!==false){
 			$originalResult = $result;
 			$result = json_decode($result);
