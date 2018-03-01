@@ -62,8 +62,11 @@ class ArloCameraModule extends IPSModule {
 		$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
 		$library = NA_GetLibrary($InstanceId, $toDayDate, $toDayDate);
 		
+		$log->LogMessage("Now; ".$now);
+				
 		for($x=0;$x<Count($library);$x++) {
 			$lastModified = $library[$x]->lastModified;
+			$log->LogMessage("Last modified: ".$lastModified);
 			if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
 				$item = $library[$x];
 				break;
