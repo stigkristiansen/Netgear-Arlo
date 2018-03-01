@@ -63,8 +63,17 @@ class Arlo {
 	
 	public function GetLibrary($FromYYYYMMDD, $ToYYYYMMDD) {
 		if($this->authentication==NULL)
-			return false;			
-	
+			return false;		
+		
+		$url = "https://arlo.netgear.com/hmsweb/users/library";
+		$data = '{"dateFrom": "'.$FromYYYYMMDD.'","dateTo": "'.$ToYYYYMMDD.'"}';
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token);
+		
+		$result = $this->HttpRequest("post", $url , $headers, $data, false);
+		
+		return result;
+		
+		/*
 		$ch = curl_init();
 		
 		$data = '{"dateFrom": "'.$FromYYYYMMDD.'","dateTo": "'.$ToYYYYMMDD.'"}';
@@ -82,7 +91,7 @@ class Arlo {
 		 	return $result->data;
 		else
 			return false;
-
+		*/
 	}
 	
 	public function Arm($BasestationName) {
@@ -100,7 +109,16 @@ class Arlo {
 		$camera = $this->GetCamera($CameraName);	
 		if($camera===false)
 			return false;
+		
+		$url = "https://arlo.netgear.com/hmsweb/users/devices/takeSnapshot";
+		$data = '{"xcloudId":"'.$camera->xCloudId.'","parentId":"'.$camera->parentId.'","deviceId":"'.$camera->deviceId.'","olsonTimeZone":"'.$camera->properties->olsonTimeZone.'"}';
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$camera->xCloudId, 'User-Agent: Symcon');
+		
+		$result = $this->HttpRequest("post", $url , $headers, $data, false);
+		
+		return $result;
 
+		/*
 		$ch = curl_init();
 		
 		$data = '{"xcloudId":"'.$camera->xCloudId.'","parentId":"'.$camera->parentId.'","deviceId":"'.$camera->deviceId.'","olsonTimeZone":"'.$camera->properties->olsonTimeZone.'"}';
@@ -118,6 +136,8 @@ class Arlo {
 		 	return true;
 		else
 			return false;
+		
+		*/
 	}
 	
 	public function DeleteLibraryItem($LibraryItem) {
