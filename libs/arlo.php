@@ -284,7 +284,7 @@ class Arlo {
 		
 		$result=curl_exec($ch);
 		
-		$log->LogMessage("HttpRequest:  Returned data was ".$result);
+		//$log->LogMessage("HttpRequest:  Returned data was ".$result);
 		
 		if($result!==false){
 			$originalResult = $result;
