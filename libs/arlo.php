@@ -53,7 +53,6 @@ class Arlo {
 	}
 	
 	public function Logout() {
-		
 		$url = "https://arlo.netgear.com/hmsweb/logout";
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon', 'Authorization: '.$this->authentication->token);
 		
@@ -162,8 +161,6 @@ class Arlo {
 	// ***********************
 	
 	function StartStreaming ($CameraName, $State) {
-		$log = new Logging(false, "Arlo Class");
-		
 		if($this->authentication==NULL)
 			return false;	
 		
@@ -184,8 +181,6 @@ class Arlo {
 	}
 	
 	function Arming ($BasestationName, $Armed) {
-		$log = new Logging(false, "Arlo Class");
-		
 		if($this->authentication==NULL)
 			return false;	
 		
@@ -207,8 +202,6 @@ class Arlo {
 	}
 	
 	function Authenticate($Email, $Password) {
-		$log = new Logging(false, "Arlo Class");
-		
 		$url = "https://arlo.netgear.com/hmsweb/login/v2";
 		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
 		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
@@ -217,8 +210,6 @@ class Arlo {
 	}
 	
 	function GetDevices ($Authentication) {
-		$log = new Logging(false, "Arlo Class");
-		
 		$url="https://arlo.netgear.com/hmsweb/users/devices";
 		$header = array('Authorization: '.$Authentication->token);
 		$data = NULL;
@@ -268,7 +259,7 @@ class Arlo {
 	}
 	
 	private function HttpRequest($Type, $Url, $Headers, $Data=NULL, $ReturnData=True) {
-		$log = new Logging(false, "Arlo Class");
+		$log = new Logging($this->log, "Arlo Class");
 		
 		$ch = curl_init();
 		
@@ -293,7 +284,7 @@ class Arlo {
 		
 		$result=curl_exec($ch);
 		
-		$log->LogMessageError("HttpRequest:  Returned data was ".$result);
+		$log->LogMessage("HttpRequest:  Returned data was ".$result);
 		
 		if($result!==false){
 			$originalResult = $result;
@@ -303,11 +294,11 @@ class Arlo {
 					return $result->data;
 				return true;
 			} else if(isset($result->success) && !$result->success)
-				$log->LogMessageError("HttpRequest: ".$result->data->message);
+				$log->LogMessage("HttpRequest: ".$result->data->message);
 			else
-				$log->LogMessageError("HttpRequest: Unkonwn JSON returned: ".$originalResult);
+				$log->LogMessage("HttpRequest: Unkonwn JSON returned: ".$originalResult);
 		} else
-			$log->LogMessageError("HttpRequest: The http ".$Type." request failed");
+			$log->LogMessage("HttpRequest: The http ".$Type." request failed");
 		
 		return false;
 	}
