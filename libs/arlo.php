@@ -71,7 +71,7 @@ class Arlo {
 		
 		$result = $this->HttpRequest("post", $url , $headers, $data, false);
 		
-		return result;
+		return $result;
 		
 		/*
 		$ch = curl_init();
