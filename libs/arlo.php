@@ -290,7 +290,7 @@ class Arlo {
 		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
 		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
 		
-		$result = $this->HttpRequest("post", $url , $header, $data=NULL);
+		$result = $this->HttpRequest("post", $url , $header, $data);
 						
 		return $result;
 		
