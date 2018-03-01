@@ -287,7 +287,7 @@ class Arlo {
 		$log = new Logging(false, "Arlo Class");
 		
 		$url = "https://arlo.netgear.com/hmsweb/login/v2";
-		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"); 
+		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
 		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon'));
 		
 		$result = HttpRequest("post", $url , $header, $data=NULL);
