@@ -388,6 +388,8 @@ class Arlo {
 	}
 	
 	private function HttpRequest($Type, $Url, $Headers, $Data=NULL, $ReturnData=True) {
+		$log = new Logging(false, "Arlo Class");
+		
 		$ch = curl_init();
 		
 		switch(strtolower($Type)) {
