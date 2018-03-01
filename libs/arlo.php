@@ -69,7 +69,7 @@ class Arlo {
 		$data = '{"dateFrom": "'.$FromYYYYMMDD.'","dateTo": "'.$ToYYYYMMDD.'"}';
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token);
 		
-		$result = $this->HttpRequest("post", $url , $headers, $data, false);
+		$result = $this->HttpRequest("post", $url , $headers, $data, true);
 		
 		return $result;
 		
