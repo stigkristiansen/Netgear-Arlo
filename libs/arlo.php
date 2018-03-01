@@ -290,7 +290,7 @@ class Arlo {
 		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
 		$header = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
 		
-		$result = $this->HttpRequest("post", $url , $header, $data);
+		$result = $this->HttpRequest("post", $url , $header, $data, true);
 						
 		return $result;
 		
@@ -323,6 +323,15 @@ class Arlo {
 	function GetDevices ($Authentication) {
 		$log = new Logging(false, "Arlo Class");
 		
+		$url="https://arlo.netgear.com/hmsweb/users/devices";
+		$header = array('Authorization: '.$Authentication->token);
+		$data = NULL;
+		
+		$result = $this->HttpRequest("get", $url , $header, $data, true);
+		
+		return $result;
+		
+		/*
 		$ch = curl_init();
 		
 		curl_setopt($ch, CURLOPT_URL,            "https://arlo.netgear.com/hmsweb/users/devices" );
@@ -344,6 +353,9 @@ class Arlo {
 			$log->LogMessageError("GetDevices: The http request failed");
 		
 		return false;
+		
+		*/
+		
 	}
 			
 	function GetDeviceType($Devices, $DeviceType) {
@@ -413,7 +425,7 @@ class Arlo {
 		
 		$result=curl_exec($ch);
 		
-		$log->LogMessageError("HttpRequest: Returned data: ".$result);
+		$log->LogMessageError("HttpRequest:  Returned data was ".$result);
 		
 		if($result!==false){
 			$originalResult = $result;
