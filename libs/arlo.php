@@ -7,7 +7,7 @@ class Arlo {
 	// ** Constructor       **
 	// ***********************
 	
-	function __construct($EnableLogging) {
+	function __construct($EnableLogging=false) {
 		$this->log = $EnableLogging;
 	}
 	
