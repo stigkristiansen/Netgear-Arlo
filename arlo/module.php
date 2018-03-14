@@ -97,13 +97,12 @@ class ArloModule extends IPSModule {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to recreate all registered devices in Symcon..."); 
 		
-		$rootCategoryId = $this->ReadPropertyInteger();
+		$rootCategoryId = $this->ReadPropertyInteger("RootCategoryId");
 		if($rootCategoryId==0) {
 			$log->LogMessage("Root category is not set in the configuration. Aborting...");
 			return;
 		}
-		
-		
+				
 		$result = $this->GetDevices("RootCategoryId");
 		if($result===false) {
 			$log->LogMessage("Failed to retrieve all devices from the Arlo cloud. Aborting...");
