@@ -1,7 +1,7 @@
 { 
     "id" :  "{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}" , 
     "name" :  "ArloBasestationModule" , 
-    "type" :  3 , 
+    "type" :  2 , 
     "vendor" :  "Stig Kristiansen" , 
     "aliases" : 
     [ 
