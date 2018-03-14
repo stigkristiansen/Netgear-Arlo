@@ -1,14 +1,14 @@
 { 
     "id" :  "{10113AE2-5247-439C-B386-B65B0DC32B12}" , 
     "name" :  "ArloModule" , 
-    "type" :  3 , 
+    "type" :  1 , 
     "vendor" :  "Stig Kristiansen" , 
     "aliases" : 
     [ 
         "NetGear Arlo"  
     ] ,   
     "parentRequirements" :  [] , 
-    "childRequirements" :  [] , 
-    "implemented" :  [] , 
+    "childRequirements" :  ["{866139E4-A0AE-45DD-B73A-3067DC8DE192}"] , 
+    "implemented" :  ["{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}"] , 
     "prefix" :  "NA" 
 }

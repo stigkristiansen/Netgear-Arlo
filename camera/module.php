@@ -19,6 +19,8 @@ class ArloCameraModule extends IPSModule {
     public function ApplyChanges(){
         parent::ApplyChanges();
 		
+		ConnectParent("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
+		
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 				
 		$log->LogMessage("Checking if the snapshot script exists..."); 

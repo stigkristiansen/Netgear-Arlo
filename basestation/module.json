@@ -7,8 +7,8 @@
     [ 
         "NetGear Arlo Basestation"  
     ] ,   
-    "parentRequirements" :  [] , 
+    "parentRequirements" :  ["{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}"] , 
     "childRequirements" :  ["{4FC942B1-1E50-472B-BC74-E58D12E74B9D}"] , 
-    "implemented" :  ["{530ABC00-2ED8-414D-B2FB-8CC0397A2438}"] , 
+    "implemented" :  ["{530ABC00-2ED8-414D-B2FB-8CC0397A2438}","{866139E4-A0AE-45DD-B73A-3067DC8DE192}"] , 
     "prefix" :  "NAB" 
 }

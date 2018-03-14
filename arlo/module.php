@@ -11,6 +11,7 @@ class ArloModule extends IPSModule {
         $this->RegisterPropertyBoolean ("Log", true);
 		$this->RegisterPropertyString("email", "");
 		$this->RegisterPropertyString("password", "");
+		$this->RegisterPropertyInteger("RootCategoryId", 0);
     }
    
     public function ApplyChanges(){
@@ -96,8 +97,14 @@ class ArloModule extends IPSModule {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to recreate all registered devices in Symcon..."); 
 		
-		$result = $this->GetDevices();
+		$rootCategoryId = $this->ReadPropertyInteger();
+		if($rootCategoryId==0) {
+			$log->LogMessage("Root category is not set in the configuration. Aborting...");
+			return;
+		}
 		
+		
+		$result = $this->GetDevices("RootCategoryId");
 		if($result===false) {
 			$log->LogMessage("Failed to retrieve all devices from the Arlo cloud. Aborting...");
 			return;
@@ -128,7 +135,7 @@ class ArloModule extends IPSModule {
 			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
 			IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
 			IPS_SetProperty($basestationInsId, "ArloModuleInstanceId", $this->InstanceID);
-			IPS_SetParent($basestationInsId, $this->InstanceID);
+			IPS_SetParent($basestationInsId, $rootCategoryId);
 			
 			IPS_ApplyChanges($basestationInsId); 
 			

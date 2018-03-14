@@ -4,6 +4,7 @@
 		{ "type": "Label", "label": "Arlo Authentication" },
 		{ "type": "ValidationTextBox", "name": "email", "caption": "Email adress:" },
 		{ "type": "PasswordTextBox", "name": "password", "caption": "Password:" },
+		{ "type": "SelectCategory", "name": "RootCategoryId", "caption": "Create items in:" },
 		
 		{ "type": "Label", "label": "Other settings" },
 		{ "type": "CheckBox", "name": "Log", "caption": "Enable logging:" }
