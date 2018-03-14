@@ -45,6 +45,13 @@ class ArloCameraModule extends IPSModule {
 		IPS_SetEventActive($eventId,$this->ReadPropertyBoolean("ScheduleSnapshot")); 
     }
 	
+	public function ReceiveData($JSONString) {
+		$data = json_decode($JSONString);
+		IPS_LogMessage("ReceiveData", utf8_decode($data->Buffer));
+	 
+		// SetValue($this->GetIDForIdent("Value"), $data->Buffer);
+	}
+	
 	public function TakeSnapshot() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 				
