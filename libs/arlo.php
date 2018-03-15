@@ -216,7 +216,7 @@ class Arlo {
 	
 	function GetDevices () {
 		$url="https://arlo.netgear.com/hmsweb/users/devices";
-		$headers = array('Authorization: '.$this->authentication->token'User-Agent:Symcon', $this->CreateCookie());
+		$headers = array('Authorization: '.$this->authentication->token, 'User-Agent:Symcon', $this->CreateCookie());
 		$data = NULL;
 		
 		return $this->HttpRequest("get", $url , $headers, $data, true);
