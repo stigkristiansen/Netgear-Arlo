@@ -103,7 +103,7 @@ class ArloModule extends IPSModule {
 			return;
 		}
 				
-		$result = $this->GetDevices("RootCategoryId");
+		$result = $this->GetDevices();
 		if($result===false) {
 			$log->LogMessage("Failed to retrieve all devices from the Arlo cloud. Aborting...");
 			return;
