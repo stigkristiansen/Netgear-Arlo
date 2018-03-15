@@ -19,6 +19,11 @@ class Arlo {
 	private $basestations = NULL;
 	private $authentication = NULL;
 	private $log = false;
+	
+	private $sso = "";
+	private $token = "";
+	private $jsessionid = "";
+	private $awselb = "";
 
 	
 	// ***********************	
@@ -32,7 +37,7 @@ class Arlo {
 		
 		$this->authentication = $result;
 		
-		$result = $this->GetDevices($this->authentication);
+		$result = $this->GetDevices();
 		if($result===false)
 			return false;
 		
@@ -204,14 +209,14 @@ class Arlo {
 	function Authenticate($Email, $Password) {
 		$url = "https://arlo.netgear.com/hmsweb/login/v2";
 		$data = "{\"email\":\"".$Email."\",\"password\":\"".base64_encode($Password)."\"}"; 
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon', 'Password-Encoded: true');
 		
 		return $this->HttpRequest("post", $url , $headers, $data, true);
 	}
 	
-	function GetDevices ($Authentication) {
+	function GetDevices () {
 		$url="https://arlo.netgear.com/hmsweb/users/devices";
-		$headers = array('Authorization: '.$Authentication->token);
+		$headers = array('Authorization: '.$this->authentication->token'User-Agent:Symcon', $this->CreateCookie());
 		$data = NULL;
 		
 		return $this->HttpRequest("get", $url , $headers, $data, true);
@@ -258,6 +263,48 @@ class Arlo {
 		return false;
 	}
 	
+	function CreateCookie($JSessionId, $Sso, $Token, $Awselb) {
+		return "Cookie: ".$this->jsessionid."; ".$this->awselb."; ".$this->sso."; ".$this->token;
+	}
+
+	function GetHeaderPart ($Header, $Part) {
+		for($x=0;$x<sizeof($Header);$x++) {
+			$pos = stripos($Header[$x], $Part); 
+			if($pos!==false) 
+				return substr($Header[$x], $pos);
+		}
+		
+		return "";
+	}
+
+	function HandleResponseHeaderLine( $curl, $headerLine ) {
+			
+		$header = explode(";", $headerLine);
+		
+		$part = $this->GetHeaderPart($header, "JSESSIONID");
+		if(stripos($part, "JSESSIONID")!==false) {
+			$this->jsessionid = $part;
+		}
+
+		$part = $this->GetHeaderPart($header, "sso");
+		if(stripos($part, "sso")!==false) {
+			$this->sso = $part;
+		}
+		
+		$part = $this->GetHeaderPart($header, "token");
+		if(stripos($part, "token")!==false) {
+			$this->token = $part;
+		}
+		
+		$part = $this->GetHeaderPart($header, "AWSELB");
+		if(stripos($part, "AWSELB")!==false) {
+			$this->awselb = $part;
+		}
+
+		return strlen($headerLine);
+	}
+
+	
 	private function HttpRequest($Type, $Url, $Headers, $Data=NULL, $ReturnData=True) {
 		$log = new Logging($this->log, "Arlo Class");
 		
@@ -278,6 +325,7 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_URL, $Url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $Headers);
+		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, "HandleResponseHeaderLine"));
 
 		if($Data!=NULL)
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $Data); 
