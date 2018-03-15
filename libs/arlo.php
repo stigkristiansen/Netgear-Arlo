@@ -263,7 +263,7 @@ class Arlo {
 		return false;
 	}
 	
-	function CreateCookie($JSessionId, $Sso, $Token, $Awselb) {
+	function CreateCookie() {
 		return "Cookie: ".$this->jsessionid."; ".$this->awselb."; ".$this->sso."; ".$this->token;
 	}
 
