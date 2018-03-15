@@ -83,7 +83,7 @@ class Arlo {
 		
 		$url = "https://arlo.netgear.com/hmsweb/users/library";
 		$data = '{"dateFrom": "'.$FromYYYYMMDD.'","dateTo": "'.$ToYYYYMMDD.'"}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token);
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, $this->CreateCookie());
 		
 		return $this->HttpRequest("post", $url , $headers, $data, true);
 	}
@@ -106,7 +106,7 @@ class Arlo {
 		
 		$url = "https://arlo.netgear.com/hmsweb/users/devices/takeSnapshot";
 		$data = '{"xcloudId":"'.$camera->xCloudId.'","parentId":"'.$camera->parentId.'","deviceId":"'.$camera->deviceId.'","olsonTimeZone":"'.$camera->properties->olsonTimeZone.'"}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$camera->xCloudId, 'User-Agent: Symcon');
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$camera->xCloudId, 'User-Agent: Symcon', $this->CreateCookie());
 		
 		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
@@ -117,7 +117,7 @@ class Arlo {
 
 		$url = "https://arlo.netgear.com/hmsweb/users/library/recycle";
 		$data = '{"data":[{"createdDate":"'.$LibraryItem->createdDate.'", "deviceId":"'.$LibraryItem->deviceId.'", "utcCreatedDate":'.$LibraryItem->utcCreatedDate.'}]}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'User-Agent: Symcon');
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'User-Agent: Symcon', $this->CreateCookie());
 		
 		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
@@ -180,7 +180,7 @@ class Arlo {
 		
 		$url = "https://arlo.netgear.com/hmsweb/users/devices/startStream";
 		$data = '{"to":"'.$camera->deviceId.'","from":"'.$this->authentication->userId.'_web","resource":"cameras/'.$camera->deviceId.'","action":"set","publishResponse":true,"transId":"web!8e3a372f.8adff!1509302776732","properties":{"activityState":"'.$activityState.'","cameraId":"'.$camera->deviceId.'"}}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudId: '.$camera->xCloudId, 'User-Agent: Symcon');
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudId: '.$camera->xCloudId, 'User-Agent: Symcon', $this->CreateCookie());
 		
 		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
@@ -201,7 +201,7 @@ class Arlo {
 		
 		$url = "https://arlo.netgear.com/hmsweb/users/devices/notify/".$basestation->deviceId;
 		$data =  '{"from":"'.$this->authentication->userId.'_web","to":"'.$basestation->deviceId.'","action":"set","resource":"modes","transId":"web!bvghopiy.asdfqweriopuzxcvbghn","publishResponse":true,"properties":{"active":"'.$mode.'"}}';
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId);
+		$headers = array('Content-Type: application/json;charset=UTF-8', 'Authorization: '.$this->authentication->token, 'xcloudid: '.$basestation->xCloudId, $this->CreateCookie());
 		
 		return $this->HttpRequest("post", $url , $headers, $data, false);
 	}
