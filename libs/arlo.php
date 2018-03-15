@@ -203,7 +203,7 @@ class Arlo {
 	
 	function Authenticate($Email, $Password) {
 		$url = "https://arlo.netgear.com/hmsweb/login/v2";
-		$data = "{\"email\":\"".$Email."\",\"password\":\"".$Password."\"}"; 
+		$data = "{\"email\":\"".$Email."\",\"password\":\"".base64_encode($Password)."\"}"; 
 		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon');
 		
 		return $this->HttpRequest("post", $url , $headers, $data, true);
