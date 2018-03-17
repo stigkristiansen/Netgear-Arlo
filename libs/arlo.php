@@ -31,23 +31,31 @@ class Arlo {
 	// ***********************
 			
 	public function Init ($Email, $Password) {
+		$log = new Logging($this->log, "Arlo Class");
+		
 		$result = $this->Authenticate($Email, $Password);
-		if($result===false)
+		if($result===false) {
+			$log->LogMessage("Failed the authentication at the Arlo Cloud!");
 			return false;
+		}
 		
 		$this->authentication = $result;
 		
 		$result = $this->GetDevices();
-		if($result===false)
+		if($result===false) {
+			$log->LogMessage("Failed retrieve all devices from the Arlo Cloud!");
 			return false;
-		
+		}
+		 
 		$this->cameras = $this->GetDeviceType($result, "camera");
 		$this->basestations = $this->GetDeviceType($result, "basestation");
 	
-		if($this->cameras==NULL || $this->basestations == NULL)
+		if($this->cameras==NULL || $this->basestations == NULL) {
+			$log->LogMessage("Failed to retrieve cameras and/or basestations from the Arlo Cloud!");
 			return false;
-			
-		return true;;
+		}	
+		
+		return true;
 	}
 	
 	public function GetAuthentication(){
@@ -194,7 +202,6 @@ class Arlo {
 			return false;	
 		
 		$basestation = $this->GetBasestation($BasestationName);	
-		
 		if($basestation===false)
 			return false;
 			
@@ -239,30 +246,41 @@ class Arlo {
 	}
 	
 	private function GetCamera($CameraName) {
+		$log = new Logging($this->log, "Arlo Class");
+		
 		$CameraName = strtoupper($CameraName);
 		
-		if($this->cameras==NULL)
+		if($this->cameras==NULL) {
+			$log->LogMessage("The Arlo Class has not been initialized!");
 			return false;
-						
+		}				
+		
 		for($x=0;$x<count($this->cameras);$x++) {
 			if(strtoupper($this->cameras[$x]->deviceName)==$CameraName)
 				return $this->cameras[$x];
 		}
 		
+		$log->LogMessage("The camera ".$CameraName." was not found in the Arlo cloud!");
+		
 		return false;
 	}
 	
 	private function GetBasestation($BasestationName) {
+		$log = new Logging($this->log, "Arlo Class");
+		
 		$BasestationName = strtoupper($BasestationName);
 	
-		if($this->basestations==NULL)
+		if($this->basestations==NULL) {
+				$log->LogMessage("The Arlo Class has not been initialized!");
 				return false;
-			
-			
+		}
+					
 		for($x=0;$x<count($this->basestations);$x++) {
 			if(strtoupper($this->basestations[$x]->deviceName)===$BasestationName)
 				return $this->basestations[$x];
 		}
+		
+		$log->LogMessage("The basestation ".$BasestationName." was not found in the Arlo cloud!");
 		
 		return false;
 	}
