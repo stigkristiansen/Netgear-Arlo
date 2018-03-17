@@ -15,7 +15,7 @@ class ArloBasestationModule extends IPSModule {
     public function ApplyChanges(){
         parent::ApplyChanges();
 		
-		$this->ConnectParent("{10113AE2-5247-439C-B386-B65B0DC32B12}");
+		$this->ConnectParent("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
     }
 	
 	public function ForwardData($JSONString) {
