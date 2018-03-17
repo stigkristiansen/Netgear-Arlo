@@ -58,15 +58,19 @@ class Arlo {
 	}
 	
 	public function Logout() {
-		$url = "https://arlo.netgear.com/hmsweb/logout";
-		$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon', 'Authorization: '.$this->authentication->token, $this->CreateCookie());
+		if(this->authenticatation!=NULL) {
 		
-		$result = $this->HttpRequest("put", $url , $headers, NULL, false);
+			$url = "https://arlo.netgear.com/hmsweb/logout";
+			$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon', 'Authorization: '.$this->authentication->token, $this->CreateCookie());
+			
+			$result = $this->HttpRequest("put", $url , $headers, NULL, false);
+			
+			$this->authentication = NULL;
+		}
 		
-		$this->authentication = NULL;
 		$this->cameras = NULL;
 		$this->basestations = NULL;
-		
+	
 		return true;
 	}
 	
@@ -278,7 +282,6 @@ class Arlo {
 	}
 
 	function HandleResponseHeaderLine( $curl, $headerLine ) {
-			
 		$header = explode(";", $headerLine);
 		
 		$part = $this->GetHeaderPart($header, "JSESSIONID");
