@@ -92,7 +92,7 @@ class ArloModule extends IPSModule {
 		return false;
 	}
 	
-	public function GetDeviceNameById($DeviceId){
+	public function GetDeviceNameById(int $DeviceId){
 		$result = GetDevices();
 		if($result!==false) {
 			$cameras = $result['cameras'];
