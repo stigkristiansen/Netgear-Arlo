@@ -64,7 +64,7 @@ class ArloCameraModule extends IPSModule {
 		
 		$log->LogMessage("Preparing a snapshot using camera \"".$cameraName."\""); 
 		
-		if($ParentInstanceId) {
+		if($ParentInstanceId>0) {
 			$now = microtime(true);
 			$toDayDate = Date('Ymd', $now);
 			$now*=1000;
@@ -82,20 +82,22 @@ class ArloCameraModule extends IPSModule {
 			}
 			
 			if(isset($item)) {
-				$log->LogMessage("The snapshot was found in the library");
+				$log->LogMessage("The snapshot was found in the library. Downloading...");
 				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
 				if(NA_DownloadURL($ParentInstanceId, $item->presignedContentUrl, $filename)) {
 					$imgId = IPS_GetObjectIDByIdent($cameraName."Snapshot", $this->InstanceID);
 					if($imgId!==false)
 						IPS_SetMediaFile($imgId, $filename, false);
-				}
+				} else
+					$log->LogMessage("Failed to download the image!");
 				
 				if($this->ReadPropertyBoolean("DeleteImage"))
 					NA_DeleteLibraryItem($ParentInstanceId, $item);
 			} else
 				$log->LogMessage("The snapshot was NOT found in the library");
-		}
+		} else
+			$log->LogMessage("This camera instance is not connected to a parent instance!");
 	}
 	
 }
