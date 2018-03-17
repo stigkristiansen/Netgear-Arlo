@@ -58,7 +58,7 @@ class Arlo {
 	}
 	
 	public function Logout() {
-		if(this->authenticatation!=NULL) {
+		if($this->authentication!=NULL) {
 		
 			$url = "https://arlo.netgear.com/hmsweb/logout";
 			$headers = array('Content-Type: application/json;charset=UTF-8', 'User-Agent: Symcon', 'Authorization: '.$this->authentication->token, $this->CreateCookie());
