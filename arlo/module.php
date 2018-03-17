@@ -155,7 +155,7 @@ class ArloModule extends IPSModule {
 							$log->LogMessage("Creating image for camera ".$cameras[$y]->deviceName);
 							$imgId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1, $cameras[$y]->deviceName);
 							$filename = __DIR__ . "/../../../media/".$cameras[$y]->deviceName.".jpg";
-							if($imgId>0 && $this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename))
+							if($imgId>0 && $this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename)) {
 								IPS_SetMediaFile($imgId, $filename, false);
 							} else
 								$log->LogMessage("Failed to create the image instance or download the image");
