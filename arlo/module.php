@@ -134,7 +134,7 @@ class ArloModule extends IPSModule {
 			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
 			IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
 			IPS_SetProperty($basestationInsId, "ArloModuleInstanceId", $this->InstanceID);
-			//IPS_SetParent($basestationInsId, $rootCategoryId);
+			IPS_SetParent($basestationInsId, $rootCategoryId);
 			
 			IPS_ApplyChanges($basestationInsId); 
 			
@@ -143,7 +143,7 @@ class ArloModule extends IPSModule {
 					$log->LogMessage("Creating camera ".$cameras[$y]->deviceName." for basestation ".$basestations[$x]->deviceName);
 					$cameraInsId = IPS_CreateInstance("{2B472806-C471-4104-9B61-EA2F17588A33}");
 					IPS_SetName($cameraInsId, $cameras[$y]->deviceName); 
-					IPS_SetParent($cameraInsId, $rootCategoryId);	
+					IPS_SetParent($cameraInsId, $basestationInsId);	
 					IPS_SetProperty($cameraInsId, "ArloModuleInstanceId", $this->InstanceID);
 					IPS_SetProperty($cameraInsId, "ArloCameraName", $cameras[$y]->deviceName);
 					IPS_SetProperty($cameraInsId, "ArloCameraDeviceId", $cameras[$y]->deviceId);
