@@ -46,23 +46,35 @@ class ArloCameraModule extends IPSModule {
 		IPS_SetEventActive($eventId,$this->ReadPropertyBoolean("ScheduleSnapshot")); 
     }
 	
+	Public function RefreshDeviceName() {
+		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+		
+		if($parentInstanceId>0) {
+			$deviceName = NA_GetDeviceNameById(,$parentInstanceId, $this->ReadPropertyString("ArloCameraDeviceId"));
+			if($deviceName!==false) {
+				IPS_SetProperty($this->InstanceID, "ArloCameraName", $deviceName);		
+				IPS_ApplyChanges($this->InstanceID);
+			}
+		}
+	}
+	
 	public function TakeSnapshot() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 				
-		$ParentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		$cameraName = $this->ReadPropertyString("ArloCameraName");
 		$cameraDeviceId = $this->ReadPropertyString("ArloCameraDeviceId");
 		
 		$log->LogMessage("Preparing a snapshot using camera \"".$cameraName."\""); 
 		
-		if($ParentInstanceId>0) {
+		if($parentInstanceId>0) {
 			$now = microtime(true);
 			$toDayDate = Date('Ymd', $now);
 			$now*=1000;
 			NA_TakeSnapshot($ParentInstanceId, $cameraName);
 			
 			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
-			$library = NA_GetLibrary($ParentInstanceId, $toDayDate, $toDayDate);
+			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
 							
 			for($x=0;$x<Count($library);$x++) {
 				$lastModified = $library[$x]->lastModified;
@@ -76,7 +88,7 @@ class ArloCameraModule extends IPSModule {
 				$log->LogMessage("The snapshot was found in the library. Downloading...");
 				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
-				if(NA_DownloadURL($ParentInstanceId, $item->presignedContentUrl, $filename)) {
+				if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
 					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
 					if($imgId!==false)
 						IPS_SetMediaFile($imgId, $filename, false);

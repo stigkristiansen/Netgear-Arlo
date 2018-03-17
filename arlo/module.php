@@ -58,7 +58,6 @@ class ArloModule extends IPSModule {
 			$log->LogMessage("Email address and/or password is not set"); 
 		
 		return false;
-		
 	}
 	
 	public function GetDevices() {
@@ -90,6 +89,26 @@ class ArloModule extends IPSModule {
 		} else
 			$log->LogMessage("Email address and/or password is not set"); 
 			
+		return false;
+	}
+	
+	public function GetDeviceNameById($DeviceId){
+		$result = GetDevices();
+		if($result!==false) {
+			$cameras = $result['cameras'];
+			$basestations = $result['basestations'];
+			
+			for($x=0;$x<sizeof($cameras);$x++) {
+				if($cameras[$x]->deviceId == $DeviceId)
+					return $cameras[$x]->deviceName;
+			}
+			
+			for($x=0;$x<sizeof($basestations);$x++) {
+				if($basestations[$x]->deviceId == $DeviceId)
+					return $basestations[$x]->deviceName;
+			}
+		}
+		
 		return false;
 	}
 		
