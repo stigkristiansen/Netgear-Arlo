@@ -58,6 +58,7 @@ class ArloCameraModule extends IPSModule {
 			if($deviceName!==false) {
 				IPS_SetProperty($this->InstanceID, "ArloCameraName", $deviceName);		
 				IPS_ApplyChanges($this->InstanceID);
+				$log->LogMessage("The name has been updated");
 			} else
 				$log->LogMessage("Did not find the Arlo camera with the id ". $this->ReadPropertyString("ArloCameraDeviceId"));
 		} else
