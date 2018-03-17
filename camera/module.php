@@ -10,7 +10,6 @@ class ArloCameraModule extends IPSModule {
         
         $this->RegisterPropertyBoolean("Log", true);
 		$this->RegisterPropertyBoolean("DeleteImage", true);
-		$this->RegisterPropertyInteger("ArloModuleInstanceId", 0);
 		$this->RegisterPropertyString("ArloCameraName", "");
 		$this->RegisterPropertyString("ArloCameraDeviceId", "");
 		$this->RegisterPropertyBoolean("ScheduleSnapshot", false);
@@ -47,17 +46,9 @@ class ArloCameraModule extends IPSModule {
 		IPS_SetEventActive($eventId,$this->ReadPropertyBoolean("ScheduleSnapshot")); 
     }
 	
-	public function ReceiveData($JSONString) {
-		$data = json_decode($JSONString);
-		IPS_LogMessage("ReceiveData", utf8_decode($data->Buffer));
-	 
-		// SetValue($this->GetIDForIdent("Value"), $data->Buffer);
-	}
-	
 	public function TakeSnapshot() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 				
-		//$InstanceId = $this->ReadPropertyInteger("ArloModuleInstanceId");
 		$ParentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		$cameraName = $this->ReadPropertyString("ArloCameraName");
 		$cameraDeviceId = $this->ReadPropertyString("ArloCameraDeviceId");
@@ -86,7 +77,7 @@ class ArloCameraModule extends IPSModule {
 				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
 				if(NA_DownloadURL($ParentInstanceId, $item->presignedContentUrl, $filename)) {
-					$imgId = IPS_GetObjectIDByIdent($cameraName."Snapshot", $this->InstanceID);
+					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
 					if($imgId!==false)
 						IPS_SetMediaFile($imgId, $filename, false);
 				} else
