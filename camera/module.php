@@ -47,6 +47,10 @@ class ArloCameraModule extends IPSModule {
     }
 	
 	Public function RefreshDeviceName() {
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("Preparing a refresh the Arlo Camera Name..."); 
+		
 		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		
 		if($parentInstanceId>0) {
@@ -54,8 +58,10 @@ class ArloCameraModule extends IPSModule {
 			if($deviceName!==false) {
 				IPS_SetProperty($this->InstanceID, "ArloCameraName", $deviceName);		
 				IPS_ApplyChanges($this->InstanceID);
-			}
-		}
+			} else
+				$log->LogMessage("Did not find the Arlo camera with the id ". $this->ReadPropertyString("ArloCameraDeviceId"));
+		} else
+			$log->LogMessage("This camera instance is not connected to a parent instance!");
 	}
 	
 	public function TakeSnapshot() {
