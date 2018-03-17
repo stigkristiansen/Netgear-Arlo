@@ -50,7 +50,7 @@ class ArloCameraModule extends IPSModule {
 		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 		
 		if($parentInstanceId>0) {
-			$deviceName = NA_GetDeviceNameById(,$parentInstanceId, $this->ReadPropertyString("ArloCameraDeviceId"));
+			$deviceName = NA_GetDeviceNameById($parentInstanceId, $this->ReadPropertyString("ArloCameraDeviceId"));
 			if($deviceName!==false) {
 				IPS_SetProperty($this->InstanceID, "ArloCameraName", $deviceName);		
 				IPS_ApplyChanges($this->InstanceID);
