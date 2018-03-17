@@ -17,16 +17,6 @@ class ArloBasestationModule extends IPSModule {
 		
 		$this->ConnectParent("{10113AE2-5247-439C-B386-B65B0DC32B12}");
     }
-	
-	public function ForwardData($JSONString) {
-		$data = json_decode($JSONString);
-		IPS_LogMessage("ForwardData", utf8_decode($data->Buffer));
-	 
-		//$resultat = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => $data->Buffer)));
-	 
-		return true;
-	}
-
 }
 
 ?>

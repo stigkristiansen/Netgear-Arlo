@@ -132,31 +132,39 @@ class ArloModule extends IPSModule {
 		for($x=0;$x<count($basestations);$x++) {
 			$log->LogMessage("Creating basestation ".$basestations[$x]->deviceName);
 			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
-			IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
-			IPS_SetProperty($basestationInsId, "ArloModuleInstanceId", $this->InstanceID);
-			IPS_SetParent($basestationInsId, $rootCategoryId);
-			
-			IPS_ApplyChanges($basestationInsId); 
-			
-			for($y=0;$y<count($cameras);$y++) {
-				if($basestations[$x]->deviceId==$cameras[$y]->parentId) {
-					$log->LogMessage("Creating camera ".$cameras[$y]->deviceName." for basestation ".$basestations[$x]->deviceName);
-					$cameraInsId = IPS_CreateInstance("{2B472806-C471-4104-9B61-EA2F17588A33}");
-					IPS_SetName($cameraInsId, $cameras[$y]->deviceName); 
-					IPS_SetParent($cameraInsId, $basestationInsId);	
-					IPS_SetProperty($cameraInsId, "ArloModuleInstanceId", $this->InstanceID);
-					IPS_SetProperty($cameraInsId, "ArloCameraName", $cameras[$y]->deviceName);
-					IPS_SetProperty($cameraInsId, "ArloCameraDeviceId", $cameras[$y]->deviceId);
-					
-					IPS_ApplyChanges($cameraInsId);
-					
-					$log->LogMessage("Creating image for camera ".$cameras[$y]->deviceName);
-					$imgId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1, $cameras[$y]->deviceName);
-					$filename = __DIR__ . "/../../../media/".$cameras[$y]->deviceName.".jpg";
-					if($this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename))
-						IPS_SetMediaFile($imgId, $filename, false);
+			if(basestationInsId>0) {
+				IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
+				IPS_SetProperty($basestationInsId, "ArloModuleInstanceId", $this->InstanceID);
+				IPS_SetParent($basestationInsId, $rootCategoryId);
+				
+				IPS_ApplyChanges($basestationInsId); 
+				
+				for($y=0;$y<count($cameras);$y++) {
+					if($basestations[$x]->deviceId==$cameras[$y]->parentId) {
+						$log->LogMessage("Creating camera ".$cameras[$y]->deviceName." for basestation ".$basestations[$x]->deviceName);
+						$cameraInsId = IPS_CreateInstance("{2B472806-C471-4104-9B61-EA2F17588A33}");
+						if($cameraInsId>0){
+							IPS_SetName($cameraInsId, $cameras[$y]->deviceName); 
+							IPS_SetParent($cameraInsId, $basestationInsId);	
+							IPS_SetProperty($cameraInsId, "ArloModuleInstanceId", $this->InstanceID);
+							IPS_SetProperty($cameraInsId, "ArloCameraName", $cameras[$y]->deviceName);
+							IPS_SetProperty($cameraInsId, "ArloCameraDeviceId", $cameras[$y]->deviceId);
+							
+							IPS_ApplyChanges($cameraInsId);
+							
+							$log->LogMessage("Creating image for camera ".$cameras[$y]->deviceName);
+							$imgId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1, $cameras[$y]->deviceName);
+							$filename = __DIR__ . "/../../../media/".$cameras[$y]->deviceName.".jpg";
+							if($imgId>0 && $this->DownloadURL($cameras[$y]->presignedLastImageUrl, $filename))
+								IPS_SetMediaFile($imgId, $filename, false);
+							} else
+								$log->LogMessage("Failed to create the image instance or download the image");
+						} else
+							$log->LogMessage("Failed to create ".$cameras[$y]->deviceName);
+					}
 				}
-			}
+			} else
+				$log->LogMessage("Failed to create ".$basestations[$x]->deviceName);
 		}
 	}
 		
