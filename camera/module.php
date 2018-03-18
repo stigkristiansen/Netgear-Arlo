@@ -78,7 +78,7 @@ class ArloCameraModule extends IPSModule {
 			$now = microtime(true);
 			$toDayDate = Date('Ymd', $now);
 			$now*=1000;
-			NA_TakeSnapshot($ParentInstanceId, $cameraName);
+			NA_TakeSnapshot($parentInstanceId, $cameraName);
 			
 			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
 			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
@@ -103,7 +103,7 @@ class ArloCameraModule extends IPSModule {
 					$log->LogMessage("Failed to download the image!");
 				
 				if($this->ReadPropertyBoolean("DeleteImage"))
-					NA_DeleteLibraryItem($ParentInstanceId, $item);
+					NA_DeleteLibraryItem($parentInstanceId, $item);
 			} else
 				$log->LogMessage("The snapshot was NOT found in the library");
 		} else

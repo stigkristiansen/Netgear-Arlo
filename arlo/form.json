@@ -12,7 +12,7 @@
     "actions":
     [
         { "type": "Label", "label": "Enter authentication data, click Apply and then Refresh to download devices from the cloud " },	
-        { "type": "Button", "label": "Refresh", "onClick": "NA_UpdateAllDevices($id);" }
+        { "type": "Button", "label": "Refresh", "onClick": "NA_UpdateAllDevices($id); echo 'The update is finished!"; }
     
     ]
 }
