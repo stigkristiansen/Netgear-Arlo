@@ -12,7 +12,7 @@
 	"actions":
     [
         { "type": "Label", "label": "Click Refresh to update the cameras Arlo Camera Name" },	
-		{ "type": "Button", "label": "Refresh", "onClick": "NAC_RefreshDeviceName($id); echo 'Please reload the form to see the change.';" }
+		{ "type": "Button", "label": "Refresh", "onClick": "NAC_RefreshDeviceName($id); echo 'Please reload the form to see the change';" }
     ]
 
 }
