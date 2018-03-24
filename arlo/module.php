@@ -18,8 +18,6 @@ class ArloModule extends IPSModule {
         parent::ApplyChanges();
     }
 	
-	
-	
 	public function TakeSnapshot (string $CameraName) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
@@ -180,8 +178,8 @@ class ArloModule extends IPSModule {
 			if($basestationInsId>0) {
 				IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
 				IPS_SetParent($basestationInsId, $rootCategoryId);
-				IPS_SetProperty($cameraInsId, "ArloBasestationName", $basestations[$x]->deviceName);
-				IPS_SetProperty($cameraInsId, "ArloBasestationDeviceId", $basestations[$x]->deviceId);
+				IPS_SetProperty($basestationInsId, "ArloBasestationName", $basestations[$x]->deviceName);
+				IPS_SetProperty($basestationInsId, "ArloBasestationDeviceId", $basestations[$x]->deviceId);
 								
 				IPS_ApplyChanges($basestationInsId); 
 				
