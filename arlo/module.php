@@ -25,7 +25,7 @@ class ArloModule extends IPSModule {
 		$log->LogMessage("Received data from child: ".$JSONString); 
 		
 		switch(strtolower($receivedData->Instruction)) {
-			case "cloud":
+			case "cloudcommand":
 				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
 				break;
 			case "scheduledoffset":
@@ -52,6 +52,9 @@ class ArloModule extends IPSModule {
 				break;
 			case "deletelibraryitem":
 				$returnedResult = array('Success'=>$this->DeleteLibraryItem($Parameters));
+				break;
+			case "downloadurl":
+				$returnedResult = array('Success'=>$this->DownloadURL($Parameters->Url, $Parameters->Filename));
 				break;
 		}
 		

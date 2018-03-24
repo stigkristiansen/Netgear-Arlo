@@ -66,7 +66,7 @@ class ArloCameraModule extends IPSModule {
 	}
 	
 	private function SendCommandToParent($Command, $Parameters){
-		$data = array("Instruction"=>"Cloud", "Command"=>$Command, "Parameters"=>$Parameters);
+		$data = array("Instruction"=>"CloudCommand", "Command"=>$Command, "Parameters"=>$Parameters);
 		$result = json_decode($this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data))));
 		
 		if(isset($result->Data))
@@ -110,7 +110,8 @@ class ArloCameraModule extends IPSModule {
 				$log->LogMessage("The snapshot was found in the library. Downloading...");
 				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
-				if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
+				if($this->SendCommandToParent("DownloadURL",array("Url"=>$item->presignedContentUrl, "Filename"=>$filename)) {
+				//if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
 					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
 					if($imgId!==false)
 						IPS_SetMediaFile($imgId, $filename, false);
