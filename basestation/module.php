@@ -10,7 +10,7 @@ class ArloBasestationModule extends IPSModule {
         $this->RegisterPropertyBoolean ("Log", true);
 		
 		$this->RegisterPropertyString ("ArloBasestationName", "");
-		$this->RegisterPropertyInteger ("ArloBasestationDeviceId",0);
+		$this->RegisterPropertyString ("ArloBasestationDeviceId",0);
 	}
    
     public function ApplyChanges(){
