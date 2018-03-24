@@ -75,58 +75,6 @@ class ArloCameraModule extends IPSModule {
 			return $result->Success;
 	}
 	
-	public function TakeSnapshotNew() {
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-				
-		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
-		$cameraName = $this->ReadPropertyString("ArloCameraName");
-		$cameraDeviceId = $this->ReadPropertyString("ArloCameraDeviceId");
-		
-		$log->LogMessage("Preparing a snapshot using camera \"".$cameraName."\""); 
-		
-		if($parentInstanceId>0) {
-			$now = microtime(true);
-			$toDayDate = Date('Ymd', $now);
-			$now*=1000;
-						
-			$this->SendCommandToParent("TakeSnapshot",array("CameraName"=>$cameraName));
-			
-			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
-			
-			$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
-						
-			//$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
-							
-			$item = null;
-			for($x=0;$x<Count($library);$x++) {
-				$lastModified = $library[$x]->lastModified;
-				if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
-					$item = $library[$x];
-					break;
-				}
-			}
-			
-			if($item!=null) {
-				$log->LogMessage("The snapshot was found in the library. Downloading...");
-				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
-				
-				if($this->SendCommandToParent("DownloadURL",array("Url"=>$item->presignedContentUrl, "Filename"=>$filename))) {
-				//if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
-					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
-					if($imgId!==false)
-						IPS_SetMediaFile($imgId, $filename, false);
-				} else
-					$log->LogMessage("Failed to download the image!");
-				
-				if($this->ReadPropertyBoolean("DeleteImage"))
-					$this->SendCommandToParent("DeleteLibraryItem",$item);
-					//NA_DeleteLibraryItem($parentInstanceId, $item);
-			} else
-				$log->LogMessage("The snapshot was NOT found in the library");
-		} else
-			$log->LogMessage("This camera instance is not connected to a parent instance!");
-	}
-	
 	public function TakeSnapshot() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 				
@@ -140,38 +88,41 @@ class ArloCameraModule extends IPSModule {
 			$now = microtime(true);
 			$toDayDate = Date('Ymd', $now);
 			$now*=1000;
-			NA_TakeSnapshot($parentInstanceId, $cameraName);
-			
-			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
-			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
-							
-			for($x=0;$x<Count($library);$x++) {
-				$lastModified = $library[$x]->lastModified;
-				if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
-					$item = $library[$x];
-					break;
+						
+			if($this->SendCommandToParent("TakeSnapshot",array("CameraName"=>$cameraName))) {
+				$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
+				
+				$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
+											
+				$item = null;
+				for($x=0;$x<Count($library);$x++) {
+					$lastModified = $library[$x]->lastModified;
+					if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
+						$item = $library[$x];
+						break;
+					}
 				}
-			}
-			
-			if(isset($item)) {
-				$log->LogMessage("The snapshot was found in the library. Downloading...");
-				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
-				if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
-					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
-					if($imgId!==false)
-						IPS_SetMediaFile($imgId, $filename, false);
-				} else
-					$log->LogMessage("Failed to download the image!");
-				
-				if($this->ReadPropertyBoolean("DeleteImage"))
-					NA_DeleteLibraryItem($parentInstanceId, $item);
+				if($item!=null) {
+					$log->LogMessage("The snapshot was found in the library. Downloading...");
+					$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
+					
+					if($this->SendCommandToParent("DownloadURL",array("Url"=>$item->presignedContentUrl, "Filename"=>$filename))) {
+						$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
+						if($imgId!==false)
+							IPS_SetMediaFile($imgId, $filename, false);
+					} else
+						$log->LogMessage("Failed to download the image!");
+					
+					if($this->ReadPropertyBoolean("DeleteImage"))
+						$this->SendCommandToParent("DeleteLibraryItem",$item);
+				}else
+					$log->LogMessage("The snapshot was NOT found in the library");
 			} else
-				$log->LogMessage("The snapshot was NOT found in the library");
+				$log->LogMessage("The snapshot failed!");
 		} else
 			$log->LogMessage("This camera instance is not connected to a parent instance!");
 	}
-	
 }
 
 ?>
