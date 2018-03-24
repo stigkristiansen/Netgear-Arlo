@@ -18,48 +18,7 @@ class ArloModule extends IPSModule {
         parent::ApplyChanges();
     }
 	
-	public function ForwardData($JSONString){
-		$receivedData = json_decode($JSONString)->Buffer;
-		
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("Received data from child: ".$JSONString); 
-		
-		switch(strtolower($receivedData->Instruction)) {
-			case "cloudcommand":
-				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
-				break;
-			case "scheduledoffset":
-				break;
-		}
-	}
 	
-	private function ExecuteCloudCommand($Command, $Parameters) {
-		$data = null;
-		
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("ExecuteCloudCommands Parameters ".print_r($Parameters, true)); 
-		
-		switch(strtolower($Command)) {
-			case "takesnapshot":
-				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters->CameraName));
-				break;
-			case "getlibrary":
-				$result = $this->GetLibrary($Parameters->FromDate, $Parameters->ToDate);
-				if($result!==false)
-					$returnedResult = array('Success'=>true, 'Data'=>$result);
-				else
-					$returnedResult = array('Success'=>false, 'Data'=>array());
-				break;
-			case "deletelibraryitem":
-				$returnedResult = array('Success'=>$this->DeleteLibraryItem($Parameters));
-				break;
-			case "downloadurl":
-				$returnedResult = array('Success'=>$this->DownloadURL($Parameters->Url, $Parameters->Filename));
-				break;
-		}
-		
-		return json_encode($returnedResult);
-	}
 	
 	public function TakeSnapshot (string $CameraName) {
 		$email = $this->ReadPropertyString("email");
@@ -395,6 +354,55 @@ class ArloModule extends IPSModule {
 		
 		return false;
 	} 
+	
+	public function ForwardData($JSONString){
+		$receivedData = json_decode($JSONString)->Buffer;
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		$log->LogMessage("Received data from child: ".$JSONString); 
+		
+		switch(strtolower($receivedData->Instruction)) {
+			case "cloudcommand":
+				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
+				break;
+			case "scheduledoffset":
+				break;
+		}
+	}
+	
+	private function ExecuteCloudCommand($Command, $Parameters) {
+		$data = null;
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		$log->LogMessage("ExecuteCloudCommands Parameters ".print_r($Parameters, true)); 
+		
+		switch(strtolower($Command)) {
+			case "takesnapshot":
+				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters->CameraName));
+				break;
+			case "getlibrary":
+				$result = $this->GetLibrary($Parameters->FromDate, $Parameters->ToDate);
+				if($result!==false)
+					$returnedResult = array('Success'=>true, 'Data'=>$result);
+				else
+					$returnedResult = array('Success'=>false, 'Data'=>array());
+				break;
+			case "deletelibraryitem":
+				$returnedResult = array('Success'=>$this->DeleteLibraryItem($Parameters));
+				break;
+			case "downloadurl":
+				$returnedResult = array('Success'=>$this->DownloadURL($Parameters->Url, $Parameters->Filename));
+				break;
+			case "arm":
+				break;
+				$returnedResult = array('Success'=>$this->Arm($Parameters->BasestationName));
+			case "disarm":
+				$returnedResult = array('Success'=>$this->Disarm($Parameters->BasestationName));
+				break;
+		}
+		
+		return json_encode($returnedResult);
+	}
 
 	private function DeleteSingleObject($ObjectId) {
 		$object = IPS_GetObject($ObjectId);
