@@ -83,15 +83,13 @@ class ArloCameraModule extends IPSModule {
 			$now = microtime(true);
 			$toDayDate = Date('Ymd', $now);
 			$now*=1000;
-			
-			//$data = array("Instruction"=>"Cloud", "Command"=>"TakeSnapshot", "Parameters"=>array("CameraName"=>$cameraName));
-			//$result = $this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data)));
-			
-			//NA_TakeSnapshot($parentInstanceId, $cameraName);
+						
 			$this->SendCommandToParent("TakeSnapshot",array("CameraName"=>$cameraName));
 			
 			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
-			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
+			$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
+			
+			//$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
 							
 			for($x=0;$x<Count($library);$x++) {
 				$lastModified = $library[$x]->lastModified;
