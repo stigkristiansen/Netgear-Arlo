@@ -93,9 +93,9 @@ class ArloCameraModule extends IPSModule {
 			
 			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
 			
-			//$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
+			$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
 						
-			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
+			//$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
 							
 			$item = null;
 			for($x=0;$x<Count($library);$x++) {
