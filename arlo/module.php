@@ -42,12 +42,14 @@ class ArloModule extends IPSModule {
 		switch(strtolower($Command)) {
 			case "takesnapshot":
 				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters['CameraName']));
+				break;
 			case "getlibrary":
 				$result = $this->GetLibrary($Parameters['FromDate'], $Parameters['ToDate']);
 				if($result!==false)
 					$returnedResult = array('Success'=>true, 'Data'=>$result);
 				else
 					$returnedResult = array('Success'=>false, 'Data'=>array());
+				break;
 		}
 		
 		return json_encode($returnedResult);
