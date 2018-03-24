@@ -68,13 +68,11 @@ class ArloCameraModule extends IPSModule {
 	private function SendCommandToParent($Command, $Parameters){
 		$data = array("Instruction"=>"Cloud", "Command"=>$Command, "Parameters"=>$Parameters);
 		$result = json_decode($this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data))),true);
-		if($result['Success']) {
-			if(isset($result['Data']))
-				return $result['Data']
-			else
-				return true;
-		} else
-			return false;
+		
+		if(isset($result['Data']))
+			return $result['Data'];
+		else
+			return $result('Success');
 	}
 	
 	public function TakeSnapshotNew() {

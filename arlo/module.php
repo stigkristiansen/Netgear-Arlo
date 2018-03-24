@@ -41,7 +41,7 @@ class ArloModule extends IPSModule {
 			case "getlibrary":
 				$result = $this->GetLibrary($Parameters['FromDate'], $Parameters['ToDate']);
 				if($result!==false)
-					$returnedResult = array('Success'=>true, 'Data'=>$result;
+					$returnedResult = array('Success'=>true, 'Data'=>$result);
 				else
 					$returnedResult = array('Success'=>false, 'Data'=>array());
 		}
