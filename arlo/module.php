@@ -37,7 +37,7 @@ class ArloModule extends IPSModule {
 		switch(strtolower($Command)) {
 			case "takesnapshot":
 				return $this->TakeSnapshot($Parameters['CameraName']);
-			case "GetLibrary":
+			case "getlibrary":
 				return $this->GetLibrary($Parameters['FromDate'], $Parameters['ToDate']);
 		}
 	}
