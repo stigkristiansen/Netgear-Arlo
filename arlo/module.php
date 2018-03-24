@@ -35,7 +35,7 @@ class ArloModule extends IPSModule {
 	
 	private function ExecuteCloudCommand($Command, $Parameters) {
 		switch($Command) {
-			case: "TakeSnapshot":
+			case "TakeSnapshot":
 				return $this->TakeSnapshot($Parameters->CameraName);
 		}
 	}
