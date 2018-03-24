@@ -51,7 +51,7 @@ class ArloModule extends IPSModule {
 					$returnedResult = array('Success'=>false, 'Data'=>array());
 				break;
 			case "deletelibraryitem":
-				$returnedResult = $this->DeleteLibraryItem($Parameters);
+				$returnedResult = array('Success'=>$this->DeleteLibraryItem($Parameters));
 				break;
 		}
 		
