@@ -72,7 +72,7 @@ class ArloCameraModule extends IPSModule {
 		if(isset($result['Data']))
 			return $result['Data'];
 		else
-			return $result('Success');
+			return $result['Success'];
 	}
 	
 	public function TakeSnapshotNew() {
