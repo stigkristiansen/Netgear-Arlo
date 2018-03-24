@@ -19,14 +19,14 @@ class ArloModule extends IPSModule {
     }
 	
 	public function ForwardData($JSONString){
-		$receivedData = json_decode($JSONString, true)['Buffer'];
+		$receivedData = json_decode($JSONString)->Buffer;
 		
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Received data from child: ".$JSONString); 
 		
-		switch(strtolower($receivedData['Instruction'])) {
+		switch(strtolower($receivedData->Instruction)) {
 			case "cloud":
-				return $this->ExecuteCloudCommand($receivedData['Command'], $receivedData['Parameters']);
+				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
 				break;
 			case "scheduledoffset":
 				break;
@@ -41,14 +41,17 @@ class ArloModule extends IPSModule {
 		
 		switch(strtolower($Command)) {
 			case "takesnapshot":
-				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters['CameraName']));
+				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters->CameraName));
 				break;
 			case "getlibrary":
-				$result = $this->GetLibrary($Parameters['FromDate'], $Parameters['ToDate']);
+				$result = $this->GetLibrary($Parameters->FromDate, $Parameters->ToDate);
 				if($result!==false)
 					$returnedResult = array('Success'=>true, 'Data'=>$result);
 				else
 					$returnedResult = array('Success'=>false, 'Data'=>array());
+				break;
+			case "deletelibraryitem":
+				$returnedResult = $this->DeleteLibraryItem($Parameters);
 				break;
 		}
 		

@@ -118,8 +118,8 @@ class ArloCameraModule extends IPSModule {
 					$log->LogMessage("Failed to download the image!");
 				
 				if($this->ReadPropertyBoolean("DeleteImage"))
-					$this->SendCommandToParent("DeleteLibraryItem",$item);
-					//NA_DeleteLibraryItem($parentInstanceId, $item);
+					//$this->SendCommandToParent("DeleteLibraryItem",$item);
+					NA_DeleteLibraryItem($parentInstanceId, $item);
 			} else
 				$log->LogMessage("The snapshot was NOT found in the library");
 		} else
