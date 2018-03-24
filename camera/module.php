@@ -110,7 +110,7 @@ class ArloCameraModule extends IPSModule {
 				$log->LogMessage("The snapshot was found in the library. Downloading...");
 				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
-				if($this->SendCommandToParent("DownloadURL",array("Url"=>$item->presignedContentUrl, "Filename"=>$filename)) {
+				if($this->SendCommandToParent("DownloadURL",array("Url"=>$item->presignedContentUrl, "Filename"=>$filename))) {
 				//if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
 					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
 					if($imgId!==false)
