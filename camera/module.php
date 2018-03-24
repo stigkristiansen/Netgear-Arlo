@@ -97,15 +97,16 @@ class ArloCameraModule extends IPSModule {
 						
 			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
 							
+			$item = null;
 			for($x=0;$x<Count($library);$x++) {
-				$lastModified = $library[$x]['lastModified'];
+				$lastModified = $library[$x]->lastModified;
 				if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
 					$item = $library[$x];
 					break;
 				}
 			}
 			
-			if(isset($item)) {
+			if($item!=null) {
 				$log->LogMessage("The snapshot was found in the library. Downloading...");
 				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
 				
