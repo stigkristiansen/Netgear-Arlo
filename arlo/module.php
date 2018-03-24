@@ -27,9 +27,9 @@ class ArloModule extends IPSModule {
 		//$data = array("instruction"=>"cloud", "command"=>"TakeSnapshot", "parameters"=>array("cameraName"=>"ute"));
 		//$resultat = $this->SendDataToParent(json_encode(Array("DataID" => "{10113AE2-5247-439C-B386-B65B0DC32B12}", "Buffer" => $data)));
 		
-		switch($receivedData->Instruction) {
+		switch($receivedData['Instruction']) {
 			case "cloud":
-				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
+				return $this->ExecuteCloudCommand($receivedData['Command'], $receivedData['Parameters']);
 				break;
 			case "scheduledOffset":
 				break;
@@ -39,7 +39,7 @@ class ArloModule extends IPSModule {
 	private function ExecuteCloudCommand($Command, $Parameters) {
 		switch($Command) {
 			case "TakeSnapshot":
-				return $this->TakeSnapshot($Parameters->CameraName);
+				return $this->TakeSnapshot($Parameters['CameraName']);
 		}
 	}
 	
