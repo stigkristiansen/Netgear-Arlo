@@ -18,6 +18,28 @@ class ArloModule extends IPSModule {
         parent::ApplyChanges();
     }
 	
+	public function ForwardData($JSONString){
+		$receivedData = json_decode($JSONString, true)['Buffer'];
+		
+		//$data = array("instruction"=>"cloud", "command"=>"TakeSnapshot", "parameters"=>array("cameraName"=>"ute"));
+		//$resultat = $this->SendDataToParent(json_encode(Array("DataID" => "{10113AE2-5247-439C-B386-B65B0DC32B12}", "Buffer" => $data)));
+		
+		switch($reveivedData->Instruction) {
+			case "cloud":
+				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
+				break;
+			case "scheduledOffset":
+				break;
+		}
+	}
+	
+	private function ExecuteCloudCommand($Command, $Parameters) {
+		switch($Command) {
+			case: "TakeSnapshot":
+				return $this->TakeSnapshot($Parameters->CameraName);
+		}
+	}
+	
 	public function TakeSnapshot (string $CameraName) {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
@@ -80,7 +102,7 @@ class ArloModule extends IPSModule {
 			if($devices===false)
 				$log->LogMessage("Failed to retrieve all devices"); 
 			else
-				$log->LogMessage("Successfully retrieved all devices "); 
+				$log->LogMessage("Successfully retrieved all devices"); 
 			
 			$arlo->Logout();
 			$log->LogMessage("Logged out from the Arlo cloud");
@@ -89,6 +111,28 @@ class ArloModule extends IPSModule {
 		} else
 			$log->LogMessage("Email address and/or password is not set"); 
 			
+		return false;
+	}
+	
+	public function GetDeviceIdByName(string $DeviceName){
+		$result = $this->GetDevices();
+		if($result!==false) {
+			$cameras = $result['cameras'];
+			$basestations = $result['basestations'];
+			
+			for($x=0;$x<sizeof($cameras);$x++) {
+				if($cameras[$x]->deviceName == $DeviceName)
+					return $cameras[$x]->deviceId;
+			}
+			
+			for($x=0;$x<sizeof($basestations);$x++) {
+				if($basestations[$x]->deviceName == $DeviceName)
+					return $basestations[$x]->deviceId;
+			}
+		}
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
+		$log->LogMessage("Unable to find the device with the name ".$DeviceName); 
 		return false;
 	}
 	
@@ -109,11 +153,13 @@ class ArloModule extends IPSModule {
 			}
 		}
 		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
+		$log->LogMessage("Unable to find the device with the id ".$DeviceId); 
 		return false;
 	}
 		
 	public function UpdateAllDevices() {
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
 		$log->LogMessage("Preparing to recreate all registered devices in Symcon..."); 
 		
 		$rootCategoryId = $this->ReadPropertyInteger("RootCategoryId");
@@ -153,9 +199,10 @@ class ArloModule extends IPSModule {
 			$basestationInsId = IPS_CreateInstance("{4DBB8C7E-FE5F-40DE-B9CB-DB7B54EBCDAA}");
 			if($basestationInsId>0) {
 				IPS_SetName($basestationInsId, $basestations[$x]->deviceName); 
-				IPS_SetProperty($basestationInsId, "ArloModuleInstanceId", $this->InstanceID);
 				IPS_SetParent($basestationInsId, $rootCategoryId);
-				
+				IPS_SetProperty($cameraInsId, "ArloBasestationName", $basestations[$x]->deviceName);
+				IPS_SetProperty($cameraInsId, "ArloBasestationDeviceId", $basestations[$x]->deviceId);
+								
 				IPS_ApplyChanges($basestationInsId); 
 				
 				for($y=0;$y<count($cameras);$y++) {

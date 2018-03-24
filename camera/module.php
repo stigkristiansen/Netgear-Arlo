@@ -65,6 +65,55 @@ class ArloCameraModule extends IPSModule {
 			$log->LogMessage("This camera instance is not connected to a parent instance!");
 	}
 	
+	public function TakeSnapshotNew() {
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+				
+		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+		$cameraName = $this->ReadPropertyString("ArloCameraName");
+		$cameraDeviceId = $this->ReadPropertyString("ArloCameraDeviceId");
+		
+		$log->LogMessage("Preparing a snapshot using camera \"".$cameraName."\""); 
+		
+		if($parentInstanceId>0) {
+			$now = microtime(true);
+			$toDayDate = Date('Ymd', $now);
+			$now*=1000;
+			
+			$data = array("Instruction"=>"cloud", "Command"=>"TakeSnapshot", "Parameters"=>array("CameraName"=>"ute"));
+			$result = $this->SendDataToParent(json_encode(Array("DataID" => "{10113AE2-5247-439C-B386-B65B0DC32B12}", "Buffer" => $data)));
+			
+			//NA_TakeSnapshot($parentInstanceId, $cameraName);
+			
+			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
+			$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
+							
+			for($x=0;$x<Count($library);$x++) {
+				$lastModified = $library[$x]->lastModified;
+				if($library[$x]->deviceId==$cameraDeviceId && $lastModified > $now) {
+					$item = $library[$x];
+					break;
+				}
+			}
+			
+			if(isset($item)) {
+				$log->LogMessage("The snapshot was found in the library. Downloading...");
+				$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
+				
+				if(NA_DownloadURL($parentInstanceId, $item->presignedContentUrl, $filename)) {
+					$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);
+					if($imgId!==false)
+						IPS_SetMediaFile($imgId, $filename, false);
+				} else
+					$log->LogMessage("Failed to download the image!");
+				
+				if($this->ReadPropertyBoolean("DeleteImage"))
+					NA_DeleteLibraryItem($parentInstanceId, $item);
+			} else
+				$log->LogMessage("The snapshot was NOT found in the library");
+		} else
+			$log->LogMessage("This camera instance is not connected to a parent instance!");
+	}
+	
 	public function TakeSnapshot() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 				
