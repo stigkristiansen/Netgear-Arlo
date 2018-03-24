@@ -21,6 +21,9 @@ class ArloModule extends IPSModule {
 	public function ForwardData($JSONString){
 		$receivedData = json_decode($JSONString, true)['Buffer'];
 		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		$log->LogMessage("Received data from child: ".$JSONString); 
+		
 		//$data = array("instruction"=>"cloud", "command"=>"TakeSnapshot", "parameters"=>array("cameraName"=>"ute"));
 		//$resultat = $this->SendDataToParent(json_encode(Array("DataID" => "{10113AE2-5247-439C-B386-B65B0DC32B12}", "Buffer" => $data)));
 		
