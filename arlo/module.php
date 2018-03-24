@@ -24,21 +24,18 @@ class ArloModule extends IPSModule {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Received data from child: ".$JSONString); 
 		
-		//$data = array("instruction"=>"cloud", "command"=>"TakeSnapshot", "parameters"=>array("cameraName"=>"ute"));
-		//$resultat = $this->SendDataToParent(json_encode(Array("DataID" => "{10113AE2-5247-439C-B386-B65B0DC32B12}", "Buffer" => $data)));
-		
-		switch($receivedData['Instruction']) {
+		switch(strtolower($receivedData['Instruction'])) {
 			case "cloud":
 				return $this->ExecuteCloudCommand($receivedData['Command'], $receivedData['Parameters']);
 				break;
-			case "scheduledOffset":
+			case "scheduledoffset":
 				break;
 		}
 	}
 	
 	private function ExecuteCloudCommand($Command, $Parameters) {
-		switch($Command) {
-			case "TakeSnapshot":
+		switch(strtolower($Command)) {
+			case "takesnapshot":
 				return $this->TakeSnapshot($Parameters['CameraName']);
 		}
 	}
