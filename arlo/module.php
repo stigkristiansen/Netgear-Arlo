@@ -35,6 +35,10 @@ class ArloModule extends IPSModule {
 	
 	private function ExecuteCloudCommand($Command, $Parameters) {
 		$data = null;
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		$log->LogMessage("ExecuteCloudCommands Parameters ".print_r($Parameters, true)); 
+		
 		switch(strtolower($Command)) {
 			case "takesnapshot":
 				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters['CameraName']));
