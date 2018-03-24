@@ -80,7 +80,7 @@ class ArloCameraModule extends IPSModule {
 			$now*=1000;
 			
 			$data = array("Instruction"=>"cloud", "Command"=>"TakeSnapshot", "Parameters"=>array("CameraName"=>"ute"));
-			$result = $this->SendDataToParent(json_encode(Array("DataID" => "{10113AE2-5247-439C-B386-B65B0DC32B12}", "Buffer" => $data)));
+			$result = $this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data)));
 			
 			//NA_TakeSnapshot($parentInstanceId, $cameraName);
 			
