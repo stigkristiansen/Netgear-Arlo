@@ -67,7 +67,14 @@ class ArloCameraModule extends IPSModule {
 	
 	private function SendCommandToParent($Command, $Parameters){
 		$data = array("Instruction"=>"Cloud", "Command"=>$Command, "Parameters"=>$Parameters);
-		return $this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data)));
+		$result = json_decode($this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data))),true);
+		if($result['Success']) {
+			if(isset($result['Data']))
+				return $result['Data']
+			else
+				return true;
+		} else
+			return false;
 	}
 	
 	public function TakeSnapshotNew() {
@@ -87,8 +94,9 @@ class ArloCameraModule extends IPSModule {
 			$this->SendCommandToParent("TakeSnapshot",array("CameraName"=>$cameraName));
 			
 			$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
-			$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
 			
+			$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
+						
 			//$library = NA_GetLibrary($parentInstanceId, $toDayDate, $toDayDate);
 							
 			for($x=0;$x<Count($library);$x++) {

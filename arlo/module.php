@@ -34,12 +34,19 @@ class ArloModule extends IPSModule {
 	}
 	
 	private function ExecuteCloudCommand($Command, $Parameters) {
+		$data = null;
 		switch(strtolower($Command)) {
 			case "takesnapshot":
-				return $this->TakeSnapshot($Parameters['CameraName']);
+				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters['CameraName']));
 			case "getlibrary":
-				return $this->GetLibrary($Parameters['FromDate'], $Parameters['ToDate']);
+				$result = $this->GetLibrary($Parameters['FromDate'], $Parameters['ToDate']);
+				if($result!==false)
+					$returnedResult = array('Success'=>true, 'Data'=>$result;
+				else
+					$returnedResult = array('Success'=>false, 'Data'=>array());
 		}
+		
+		return json_encode($returnedResult);
 	}
 	
 	public function TakeSnapshot (string $CameraName) {
