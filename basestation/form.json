@@ -6,5 +6,9 @@
 		{ "type": "Label", "label": "Other settings" },
 		{ "type": "CheckBox", "name": "Log", "caption": "Enable logging:" }
     ],
-
+	"actions":
+    [
+        { "type": "Label", "label": "Click Refresh to update the basestations name" },	
+		{ "type": "Button", "label": "Refresh", "onClick": "NAB_RefreshDeviceName($id); echo 'Please reload the form to see the change';" }
+    ]
 }

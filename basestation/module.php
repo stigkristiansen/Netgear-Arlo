@@ -55,6 +55,25 @@ class ArloBasestationModule extends IPSModule {
 			$log->LogMessage("This basestation instance is not connected to a parent instance!");
 	}
 	
+	Public function RefreshDeviceName() {
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("Preparing a refresh the Arlo Basestation Name..."); 
+		
+		$parentInstanceId = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+		
+		if($parentInstanceId>0) {
+			$deviceName = $this->SendCommandToParent("GetDeviceNameById",array("DeviceId"=>$this->ReadPropertyString("ArloBasestationDeviceId")));
+			if($deviceName!==false) {
+				IPS_SetProperty($this->InstanceID, "ArloBasestationName", $deviceName);		
+				$log->LogMessage("The name has been updated");
+				IPS_ApplyChanges($this->InstanceID);
+			} else
+				$log->LogMessage("Did not find the Arlo basestation with the id ". $this->ReadPropertyString("ArloBasestationDeviceId"));
+		} else
+			$log->LogMessage("This basestation instance is not connected to a parent instance!");
+	}
+	
 	private function SendCommandToParent($Command, $Parameters){
 		$data = array("Instruction"=>"CloudCommand", "Command"=>$Command, "Parameters"=>$Parameters);
 		$result = json_decode($this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data))));
