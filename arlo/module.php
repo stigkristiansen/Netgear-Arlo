@@ -18,46 +18,17 @@ class ArloModule extends IPSModule {
         parent::ApplyChanges();
     }
 	
-	public function TakeSnapshot (string $CameraName) {
-		$email = $this->ReadPropertyString("email");
-		$password = $this->ReadPropertyString("password");
+	public function ForwardData($JSONString){
+		$receivedData = json_decode($JSONString)->Buffer;
 		
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("Preparing to take a snapshot..."); 
-				
-		if(strlen($password)>0 && strlen($email)>0) {
-			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
-			if ($arlo->Init($email,$password)===false) {
-				$arlo->Logout();
-				$log->LogMessage("Failed to log on to the Arlo cloud"); 
-				return false;
-			} else
-				$log->LogMessage("Logged on to the Arlo cloud"); 
-			
-			if($arlo->StartStream($CameraName)===false) {
-				$arlo->Logout();
-				$log->LogMessage("Failed to start the cameras recording"); 
-				return false;
-			} else
-				$log->LogMessage("Started the cameras recording"); 
-			
-			if($arlo->TakeSnapshot($CameraName)===false) {
-				$arlo->Logout();
-				$log->LogMessage("Failed to take a snapshot"); 
-				return false;
-			} else
-				$log->LogMessage("The snapshot was taken successfully. Stopping the recording..."); 
-			
-			$arlo->StopStream($CameraName);
-			
-			$arlo->Logout();
-			$log->LogMessage("Logged out from the Arlo cloud");
-					
-			return true;
-		} else
-			$log->LogMessage("Email address and/or password is not set"); 
+		$log->LogMessage("Received data from child: ".$JSONString); 
 		
-		return false;
+		switch(strtolower($receivedData->Instruction)) {
+			case "cloudcommand":
+				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
+				break;
+		}
 	}
 	
 	public function GetDevices() {
@@ -210,8 +181,52 @@ class ArloModule extends IPSModule {
 				$log->LogMessage("Failed to create ".$basestations[$x]->deviceName);
 		}
 	}
+
+	
+	private function TakeSnapshot (string $CameraName) {
+		$email = $this->ReadPropertyString("email");
+		$password = $this->ReadPropertyString("password");
 		
-	public function GetLibrary(string $FromYYYYMMDD, string $ToYYYYMMDD) {
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		$log->LogMessage("Preparing to take a snapshot..."); 
+				
+		if(strlen($password)>0 && strlen($email)>0) {
+			$arlo = new Arlo($this->ReadPropertyBoolean("Log"));
+			if ($arlo->Init($email,$password)===false) {
+				$arlo->Logout();
+				$log->LogMessage("Failed to log on to the Arlo cloud"); 
+				return false;
+			} else
+				$log->LogMessage("Logged on to the Arlo cloud"); 
+			
+			if($arlo->StartStream($CameraName)===false) {
+				$arlo->Logout();
+				$log->LogMessage("Failed to start the cameras recording"); 
+				return false;
+			} else
+				$log->LogMessage("Started the cameras recording"); 
+			
+			if($arlo->TakeSnapshot($CameraName)===false) {
+				$arlo->Logout();
+				$log->LogMessage("Failed to take a snapshot"); 
+				return false;
+			} else
+				$log->LogMessage("The snapshot was taken successfully. Stopping the recording..."); 
+			
+			$arlo->StopStream($CameraName);
+			
+			$arlo->Logout();
+			$log->LogMessage("Logged out from the Arlo cloud");
+					
+			return true;
+		} else
+			$log->LogMessage("Email address and/or password is not set"); 
+		
+		return false;
+	}
+	
+		
+	private function GetLibrary(string $FromYYYYMMDD, string $ToYYYYMMDD) {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to retrieve the library from the Arlo cloud..."); 
 		
@@ -242,7 +257,7 @@ class ArloModule extends IPSModule {
 		return false;
 	}
 	
-	public function DeleteLibraryItem($LibraryItem) {
+	private function DeleteLibraryItem($LibraryItem) {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to delete an item the Arlo cloud library..."); 
 		
@@ -274,7 +289,7 @@ class ArloModule extends IPSModule {
 		return false;
 	}
 	
-	public function DownloadURL(string $Url, string $Filename) {
+	private function DownloadURL(string $Url, string $Filename) {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to downloaded an image from the Arlo cloud");
 		
@@ -289,7 +304,7 @@ class ArloModule extends IPSModule {
 		return $result;
 	}
 
-	public function Arm(string $BasestationName) {
+	private function Arm(string $BasestationName) {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to arm the basestation ".$BasestationName);
 		
@@ -321,7 +336,7 @@ class ArloModule extends IPSModule {
 		return false;
 	}  			
 	
-	public function Disarm(string $BasestationName) {
+	private function Disarm(string $BasestationName) {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Preparing to disarm the basestation ".$BasestationName);
 
@@ -339,9 +354,9 @@ class ArloModule extends IPSModule {
 			
 			$result = $arlo->Disarm($BasestationName);
 			if($result)
-				$log->LogMessage("Successfully armed the basestation"); 
+				$log->LogMessage("Successfully disarmed the basestation"); 
 			else
-				$log->LogMessage("Failed to arm the basestation"); 
+				$log->LogMessage("Failed to disarm the basestation"); 
 			
 			$arlo->Logout();
 			$log->LogMessage("Logged out from the Arlo cloud");
@@ -352,21 +367,6 @@ class ArloModule extends IPSModule {
 		
 		return false;
 	} 
-	
-	public function ForwardData($JSONString){
-		$receivedData = json_decode($JSONString)->Buffer;
-		
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("Received data from child: ".$JSONString); 
-		
-		switch(strtolower($receivedData->Instruction)) {
-			case "cloudcommand":
-				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);
-				break;
-			case "scheduledoffset":
-				break;
-		}
-	}
 	
 	private function ExecuteCloudCommand($Command, $Parameters) {
 		$data = null;
