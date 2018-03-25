@@ -213,6 +213,13 @@ class ArloModule extends IPSModule {
 			case "disarm":
 				$returnedResult = array('Success'=>$this->Disarm($Parameters->BasestationName));
 				break;
+			case "getdevicenamebyid":
+				$result = $this->GetDeviceNameById($Parameters->DeviceId);
+				if($result!==false)
+					$returnedResult = array('Success'=>true, 'Data'=>$result);
+				else
+					$returnedResult = array('Success'=>false);
+				break;
 		}
 		
 		return json_encode($returnedResult);
