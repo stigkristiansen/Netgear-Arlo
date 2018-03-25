@@ -38,7 +38,7 @@ class ArloCameraModule extends IPSModule {
 			$eventId = IPS_CreateEvent(1);
 			IPS_SetParent($eventId, $scriptId);
 			IPS_SetIdent($eventId, "eventsnapshot");
-			IPS_SetEventCyclicTimeFrom($eventId , 12 , 0, 0) ;
+			IPS_SetEventCyclicTimeFrom($eventId , 12 , 0, 0);
 		} else
 			$log->LogMessage("The event existed"); 
 		
@@ -54,6 +54,19 @@ class ArloCameraModule extends IPSModule {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		$log->LogMessage("Received json string ".$JSONString); 
 		$log->LogMessage("Got data from parent: ".print_r($data->Buffer->Data, true)); 
+		
+		$command = strtolower($data->Buffer->Data->Command);
+		
+		switch($command) {
+			case "updatescheduledtime":
+				$offset = intval($data->Buffer->Data->Offset);
+				$scriptId = @IPS_GetObjectIDByIdent("scriptsnapshot", $this->InstanceID);
+				$eventId = @IPS_GetObjectIDByIdent("eventsnapshot", $scriptId);
+				IPS_SetEventCyclicTimeFrom($eventId , 12 , $offset, 0);	
+				break;
+		}
+		
+		
 	}
 	
 	Public function RefreshDeviceName() {
