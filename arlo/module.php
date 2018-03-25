@@ -22,8 +22,7 @@ class ArloModule extends IPSModule {
 		$receivedData = json_decode($JSONString)->Buffer;
 		
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		//$log->LogMessage("Received data from child: ".$JSONString); 
-		
+				
 		switch(strtolower($receivedData->Instruction)) {
 			case "cloudcommand":
 				return $this->ExecuteCloudCommand($receivedData->Command, $receivedData->Parameters);

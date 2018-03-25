@@ -52,13 +52,12 @@ class ArloCameraModule extends IPSModule {
 		$data = json_decode($JSONString);
 	
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		//$log->LogMessage("Received json string ".$JSONString); 
+		//$log->LogMessage("Received json string from parent ".$JSONString); 
 		//$log->LogMessage("Got data from parent: ".print_r($data->Buffer->Data, true)); 
-		
-		$command = strtolower($data->Buffer->Data->Command);
-		switch($command) {
+				
+		switch(strtolower($data->Buffer->Data->Command)) {
 			case "updatescheduledtime":
-				$log->LogMessage("Adjusting scheduled time for the script _Snapshot...");
+				$log->LogMessage("Adjusting scheduled time for the child script _Snapshot...");
 				$offset = intval($data->Buffer->Data->Offset);
 				$scriptId = @IPS_GetObjectIDByIdent("scriptsnapshot", $this->InstanceID);
 				$eventId = @IPS_GetObjectIDByIdent("eventsnapshot", $scriptId);
@@ -120,7 +119,7 @@ class ArloCameraModule extends IPSModule {
 				
 				if($item!=null) {
 					$log->LogMessage("The snapshot was found in the library. Downloading...");
-					$filename = __DIR__ . "/../../../media/".$cameraName.".jpg";
+					$filename = __DIR__."/../../../media/".$cameraName.".jpg";
 					
 					if($this->SendCommandToParent("DownloadURL",array("Url"=>$item->presignedContentUrl, "Filename"=>$filename))) {
 						$imgId = IPS_GetObjectIDByIdent($cameraDeviceId."Snapshot", $this->InstanceID);

@@ -3,7 +3,7 @@
     [
 		{ "type": "ValidationTextBox", "name": "ArloCameraName", "caption": "Camera Name: " },
 		{ "type": "ValidationTextBox", "name": "ArloCameraDeviceId", "caption": "Camera Id: " },
-		{ "type": "Label", "label": "Take a snapshot every day at 12:00 AM" },
+		{ "type": "Label", "label": "Take a snapshot every day around 12:00 AM" },
 		{ "type": "CheckBox", "name": "ScheduleSnapshot", "caption": "Schedule snapshot" },
 		{ "type": "Label", "label": "Delete image from Arlo.com after a snapshot" },
 		{ "type": "CheckBox", "name": "DeleteImage", "caption": "Delete image" },
