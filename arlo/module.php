@@ -31,11 +31,6 @@ class ArloModule extends IPSModule {
 		}
 	}
 	
-	public function SendToChildren(string $DeviceId, string $Data) {
-		$data = array("Id"=>$DeviceId, "Data"=>$Data);
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{4FC942B1-1E50-472B-BC74-E58D12E74B9D}", "Buffer" => $data)));
-	}
-	
 	public function GetDevices() {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");
@@ -127,8 +122,7 @@ class ArloModule extends IPSModule {
 							
 							IPS_ApplyChanges($cameraInsId);
 							
-							$data = array("Command"=>"UpdateScheduledTime", "Offset"=>$y); 
-							$this->SendToChildren($cameras[$y]->deviceId, $data);
+							$this->SendToChild($cameras[$y]->deviceId, array("Command"=>"UpdateScheduledTime", "Offset"=>$y));
 														
 							$log->LogMessage("Creating image for camera ".$cameras[$y]->deviceName);
 							$imgId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1, $cameras[$y]->deviceId);
@@ -146,6 +140,11 @@ class ArloModule extends IPSModule {
 		}
 	}
 
+	private function SendToChild(string $DeviceId, string $Data) {
+		$data = array("Id"=>$DeviceId, "Data"=>$Data);
+		$this->SendDataToChildren(json_encode(Array("DataID" => "{4FC942B1-1E50-472B-BC74-E58D12E74B9D}", "Buffer" => $data)));
+	}
+	
 	private function ExecuteCloudCommand($Command, $Parameters) {
 		$data = null;
 		
