@@ -22,7 +22,7 @@ class ArloModule extends IPSModule {
 		$receivedData = json_decode($JSONString)->Buffer;
 		
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("Received data from child: ".$JSONString); 
+		//$log->LogMessage("Received data from child: ".$JSONString); 
 		
 		switch(strtolower($receivedData->Instruction)) {
 			case "cloudcommand":
@@ -182,6 +182,41 @@ class ArloModule extends IPSModule {
 		}
 	}
 
+	private function ExecuteCloudCommand($Command, $Parameters) {
+		$data = null;
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		//$log->LogMessage("ExecuteCloudCommands Parameters ".print_r($Parameters, true)); 
+		
+		$returnedResult = array('Success'=>false);
+		
+		switch(strtolower($Command)) {
+			case "takesnapshot":
+				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters->CameraName));
+				break;
+			case "getlibrary":
+				$result = $this->GetLibrary($Parameters->FromDate, $Parameters->ToDate);
+				if($result!==false)
+					$returnedResult = array('Success'=>true, 'Data'=>$result);
+				else
+					$returnedResult = array('Success'=>false, 'Data'=>array());
+				break;
+			case "deletelibraryitem":
+				$returnedResult = array('Success'=>$this->DeleteLibraryItem($Parameters));
+				break;
+			case "downloadurl":
+				$returnedResult = array('Success'=>$this->DownloadURL($Parameters->Url, $Parameters->Filename));
+				break;
+			case "arm":
+				$returnedResult = array('Success'=>$this->Arm($Parameters->BasestationName));
+				break;
+			case "disarm":
+				$returnedResult = array('Success'=>$this->Disarm($Parameters->BasestationName));
+				break;
+		}
+		
+		return json_encode($returnedResult);
+	}
 	
 	private function TakeSnapshot (string $CameraName) {
 		$email = $this->ReadPropertyString("email");
@@ -367,43 +402,7 @@ class ArloModule extends IPSModule {
 		
 		return false;
 	} 
-	
-	private function ExecuteCloudCommand($Command, $Parameters) {
-		$data = null;
 		
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		$log->LogMessage("ExecuteCloudCommands Parameters ".print_r($Parameters, true)); 
-		
-		$returnedResult = array('Success'=>false);
-		
-		switch(strtolower($Command)) {
-			case "takesnapshot":
-				$returnedResult = array('Success'=>$this->TakeSnapshot($Parameters->CameraName));
-				break;
-			case "getlibrary":
-				$result = $this->GetLibrary($Parameters->FromDate, $Parameters->ToDate);
-				if($result!==false)
-					$returnedResult = array('Success'=>true, 'Data'=>$result);
-				else
-					$returnedResult = array('Success'=>false, 'Data'=>array());
-				break;
-			case "deletelibraryitem":
-				$returnedResult = array('Success'=>$this->DeleteLibraryItem($Parameters));
-				break;
-			case "downloadurl":
-				$returnedResult = array('Success'=>$this->DownloadURL($Parameters->Url, $Parameters->Filename));
-				break;
-			case "arm":
-				$returnedResult = array('Success'=>$this->Arm($Parameters->BasestationName));
-				break;
-			case "disarm":
-				$returnedResult = array('Success'=>$this->Disarm($Parameters->BasestationName));
-				break;
-		}
-		
-		return json_encode($returnedResult);
-	}
-
 	private function DeleteSingleObject($ObjectId) {
 		$object = IPS_GetObject($ObjectId);
 		
