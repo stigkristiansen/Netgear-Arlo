@@ -45,15 +45,15 @@ class ArloCameraModule extends IPSModule {
 		$log->LogMessage("Setting the events active state to configured value"); 
 		IPS_SetEventActive($eventId,$this->ReadPropertyBoolean("ScheduleSnapshot")); 
 		
-		//$this->SetReceiveDataFilter(".*Id=".$this->ReadPropertyString("ArloCameraDeviceId").".*");
+		$this->SetReceiveDataFilter(".*".$this->ReadPropertyString("ArloCameraDeviceId").".*");
     }
 	
 	public function ReceiveData($JSONString) {
 		$data = json_decode($JSONString);
 	
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
-		
-		$log->LogMessage("Got data from parent: ".$data->Buffer); 
+		$log->LogMessage("Received json string ".$JSONString); 
+		$log->LogMessage("Got data from parent: ".$data->Buffer->Data); 
 	}
 	
 	Public function RefreshDeviceName() {
