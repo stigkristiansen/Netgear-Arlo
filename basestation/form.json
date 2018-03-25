@@ -1,6 +1,8 @@
 {
     "elements":
     [
+		{ "type": "ValidationTextBox", "name": "ArloBasestationName", "caption": "Basestation Name: " },
+		{ "type": "ValidationTextBox", "name": "ArloBasestationDeviceId", "caption": "Basestation Id: " },
 		{ "type": "Label", "label": "Other settings" },
 		{ "type": "CheckBox", "name": "Log", "caption": "Enable logging:" }
     ],
