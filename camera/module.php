@@ -53,7 +53,7 @@ class ArloCameraModule extends IPSModule {
 	
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
 		
-		$log->LogMessage("Got data from parent: ".data->Buffer); 
+		$log->LogMessage("Got data from parent: ".$data->Buffer); 
 	}
 	
 	Public function RefreshDeviceName() {
