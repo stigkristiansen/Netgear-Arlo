@@ -31,6 +31,10 @@ class ArloModule extends IPSModule {
 		}
 	}
 	
+	public function SendToChildren(string $Data) {
+		$this->SendDataToChildren(json_encode(Array("DataID" => "{4FC942B1-1E50-472B-BC74-E58D12E74B9D}", "Buffer" => $Data)));
+	}
+	
 	public function GetDevices() {
 		$email = $this->ReadPropertyString("email");
 		$password = $this->ReadPropertyString("password");

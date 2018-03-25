@@ -44,7 +44,17 @@ class ArloCameraModule extends IPSModule {
 		
 		$log->LogMessage("Setting the events active state to configured value"); 
 		IPS_SetEventActive($eventId,$this->ReadPropertyBoolean("ScheduleSnapshot")); 
+		
+		//$this->SetReceiveDataFilter(".*Id=".$this->ReadPropertyString("ArloCameraDeviceId").".*");
     }
+	
+	public function ReceiveData($JSONString) {
+		$data = json_decode($JSONString);
+	
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
+		
+		$log->LogMessage("Got data from parent: ".data->Buffer); 
+	}
 	
 	Public function RefreshDeviceName() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_Getname($this->InstanceID));
@@ -55,7 +65,6 @@ class ArloCameraModule extends IPSModule {
 		
 		if($parentInstanceId>0) {
 			$deviceName = $this->SendCommandToParent("GetDeviceNameById",array("DeviceId"=>$this->ReadPropertyString("ArloCameraDeviceId")));
-			//$deviceName = NA_GetDeviceNameById($parentInstanceId, $this->ReadPropertyString("ArloCameraDeviceId"));
 			if($deviceName!==false) {
 				IPS_SetProperty($this->InstanceID, "ArloCameraName", $deviceName);		
 				$log->LogMessage("The name has been updated");
@@ -64,16 +73,6 @@ class ArloCameraModule extends IPSModule {
 				$log->LogMessage("Did not find the Arlo camera with the id ". $this->ReadPropertyString("ArloCameraDeviceId"));
 		} else
 			$log->LogMessage("This camera instance is not connected to a parent instance!");
-	}
-	
-	private function SendCommandToParent($Command, $Parameters){
-		$data = array("Instruction"=>"CloudCommand", "Command"=>$Command, "Parameters"=>$Parameters);
-		$result = json_decode($this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data))));
-		
-		if(isset($result->Data))
-			return $result->Data;
-		else
-			return $result->Success;
 	}
 	
 	public function TakeSnapshot() {
@@ -91,8 +90,9 @@ class ArloCameraModule extends IPSModule {
 			$now*=1000;
 						
 			if($this->SendCommandToParent("TakeSnapshot",array("CameraName"=>$cameraName))) {
+				$log->LogMessage("The snapshot was taken successfully");
 				$log->LogMessage("Fetching the library from the Arlo cloud and searching for the last snapshot...");
-				
+								
 				$library = $this->SendCommandToParent("GetLibrary",array("FromDate"=>$toDayDate, "ToDate"=>$toDayDate));
 											
 				$item = null;
@@ -123,6 +123,16 @@ class ArloCameraModule extends IPSModule {
 				$log->LogMessage("The snapshot failed!");
 		} else
 			$log->LogMessage("This camera instance is not connected to a parent instance!");
+	}
+	
+	private function SendCommandToParent($Command, $Parameters){
+		$data = array("Instruction"=>"CloudCommand", "Command"=>$Command, "Parameters"=>$Parameters);
+		$result = json_decode($this->SendDataToParent(json_encode(Array("DataID" => "{0F113ADC-F4F1-47F7-A0B2-B95D6AE0A77A}", "Buffer" => $data))));
+		
+		if(isset($result->Data))
+			return $result->Data;
+		else
+			return $result->Success;
 	}
 }
 
