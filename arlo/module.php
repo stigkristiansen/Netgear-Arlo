@@ -127,6 +127,9 @@ class ArloModule extends IPSModule {
 							
 							IPS_ApplyChanges($cameraInsId);
 							
+							$data = array("Command"=>"UpdateScheduledTime", "Offset"=>$y); 
+							SendToChildren($cameras[$y]->deviceId, $data)
+							
 							$log->LogMessage("Creating image for camera ".$cameras[$y]->deviceName);
 							$imgId = $this->CreateMediaByName($cameraInsId, "Snapshot", 1, $cameras[$y]->deviceId);
 							$filename = __DIR__ . "/../../../media/".$cameras[$y]->deviceName.".jpg";
