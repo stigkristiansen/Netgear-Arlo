@@ -62,50 +62,6 @@ class ArloModule extends IPSModule {
 			
 		return false;
 	}
-	
-	public function GetDeviceIdByName(string $DeviceName){
-		$result = $this->GetDevices();
-		if($result!==false) {
-			$cameras = $result['cameras'];
-			$basestations = $result['basestations'];
-			
-			for($x=0;$x<sizeof($cameras);$x++) {
-				if($cameras[$x]->deviceName == $DeviceName)
-					return $cameras[$x]->deviceId;
-			}
-			
-			for($x=0;$x<sizeof($basestations);$x++) {
-				if($basestations[$x]->deviceName == $DeviceName)
-					return $basestations[$x]->deviceId;
-			}
-		}
-		
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
-		$log->LogMessage("Unable to find the device with the name ".$DeviceName); 
-		return false;
-	}
-	
-	public function GetDeviceNameById(int $DeviceId){
-		$result = $this->GetDevices();
-		if($result!==false) {
-			$cameras = $result['cameras'];
-			$basestations = $result['basestations'];
-			
-			for($x=0;$x<sizeof($cameras);$x++) {
-				if($cameras[$x]->deviceId == $DeviceId)
-					return $cameras[$x]->deviceName;
-			}
-			
-			for($x=0;$x<sizeof($basestations);$x++) {
-				if($basestations[$x]->deviceId == $DeviceId)
-					return $basestations[$x]->deviceName;
-			}
-		}
-		
-		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
-		$log->LogMessage("Unable to find the device with the id ".$DeviceId); 
-		return false;
-	}
 		
 	public function UpdateAllDevices() {
 		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
@@ -224,6 +180,51 @@ class ArloModule extends IPSModule {
 		
 		return json_encode($returnedResult);
 	}
+	
+	private function GetDeviceIdByName(string $DeviceName){
+		$result = $this->GetDevices();
+		if($result!==false) {
+			$cameras = $result['cameras'];
+			$basestations = $result['basestations'];
+			
+			for($x=0;$x<sizeof($cameras);$x++) {
+				if($cameras[$x]->deviceName == $DeviceName)
+					return $cameras[$x]->deviceId;
+			}
+			
+			for($x=0;$x<sizeof($basestations);$x++) {
+				if($basestations[$x]->deviceName == $DeviceName)
+					return $basestations[$x]->deviceId;
+			}
+		}
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
+		$log->LogMessage("Unable to find the device with the name ".$DeviceName); 
+		return false;
+	}
+	
+	private function GetDeviceNameById(int $DeviceId){
+		$result = $this->GetDevices();
+		if($result!==false) {
+			$cameras = $result['cameras'];
+			$basestations = $result['basestations'];
+			
+			for($x=0;$x<sizeof($cameras);$x++) {
+				if($cameras[$x]->deviceId == $DeviceId)
+					return $cameras[$x]->deviceName;
+			}
+			
+			for($x=0;$x<sizeof($basestations);$x++) {
+				if($basestations[$x]->deviceId == $DeviceId)
+					return $basestations[$x]->deviceName;
+			}
+		}
+		
+		$log = new Logging($this->ReadPropertyBoolean("Log"), IPS_GetName($this->InstanceID));
+		$log->LogMessage("Unable to find the device with the id ".$DeviceId); 
+		return false;
+	}
+
 	
 	private function TakeSnapshot (string $CameraName) {
 		$email = $this->ReadPropertyString("email");
