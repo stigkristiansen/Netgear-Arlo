@@ -346,9 +346,10 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $Headers);
 		//Attach Headerfunction to retrieve headers if logging on to Arlo cloud
-		if(stripos($Url, "arlo.netgear.com/hmsweb/login/v2")!==false) 
+		if(stripos($Url, "arlo.netgear.com/hmsweb/login/v2")!==false) {
+			$log->LogMessage("HttpRequest:  Attaching Headerfunction");
 			curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, "HandleResponseHeaderLine"));
-
+		}
 		if($Data!=NULL)
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $Data); 
 		
