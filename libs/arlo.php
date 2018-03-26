@@ -324,7 +324,6 @@ class Arlo {
 
 		return strlen($headerLine);
 	}
-
 	
 	private function HttpRequest($Type, $Url, $Headers, $Data=NULL, $ReturnData=True) {
 		$log = new Logging($this->log, "Arlo Class");
@@ -346,7 +345,9 @@ class Arlo {
 		curl_setopt($ch, CURLOPT_URL, $Url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $Headers);
-		curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, "HandleResponseHeaderLine"));
+		//Attach Headerfunction to retrieve headers if logging on to Arlo cloud
+		if(stripos($Url, "arlo.netgear.com/hmsweb/login/v2")!==false) 
+			curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, "HandleResponseHeaderLine"));
 
 		if($Data!=NULL)
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $Data); 
