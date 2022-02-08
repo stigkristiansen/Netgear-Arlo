@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Logging {
   private $logEnabled;
@@ -27,4 +27,4 @@ class Logging {
       IPS_LogMessage($this->sender, $Message);
     }
 }
-?>
+
