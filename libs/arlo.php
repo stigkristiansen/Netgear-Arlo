@@ -1,4 +1,4 @@
-<?
+<?php
 require_once(__DIR__ . "/../libs/logging.php");
 
 class Arlo {
@@ -306,4 +306,3 @@ class Arlo {
 
 
 
-?>
