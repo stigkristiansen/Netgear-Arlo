@@ -1,4 +1,4 @@
-<?	
+<?php	
 
 require_once(__DIR__ . "/../libs/arlo.php");
 require_once(__DIR__ . "/../libs/logging.php");
@@ -88,4 +88,4 @@ class ArloCameraModule extends IPSModule {
 	
 }
 
-?>
+
