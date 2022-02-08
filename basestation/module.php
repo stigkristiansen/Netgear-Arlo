@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once(__DIR__ . "/../libs/arlo.php");
 
@@ -85,4 +85,4 @@ class ArloBasestationModule extends IPSModule {
 	}
 }
 
-?>
+
